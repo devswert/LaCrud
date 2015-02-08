@@ -2,8 +2,9 @@
 namespace DevSwert\LaCrud\Controller;
 
 use DevSwert\LaCrud\Theme\TemplateBuilder;
+use SimpleCrud\Http\Controllers\Controller;
 
-abstract class LaCrudBaseController extends \BaseController{
+abstract class LaCrudBaseController extends Controller{
 
 	public $repository;
 	public $manager;

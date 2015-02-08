@@ -16,9 +16,9 @@ final class TemplateBuilder{
 
 	public function deniedForAccess($message){
 		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->configuration->theme() : 'la-crud::Default.';
+		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->configuration->theme() : 'lacrud::Default.';
 
-		return \View::make($this->base_theme.'partials.403',array(
+		return view($this->base_theme.'partials.403',array(
 			'header' => $this->getHeaderTheme(true,1),
 			'template' => $this->base_theme,
 			'message' => $message,
@@ -61,9 +61,9 @@ final class TemplateBuilder{
 		$data = $this->controller->repository->filterData($this->controller->repository->get());
 
 		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->configuration->theme() : 'la-crud::Default.';
+		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->configuration->theme() : 'lacrud::Default.';
 
-		return \View::make($this->base_theme.'pages.index',array(
+		return view($this->base_theme.'pages.index',array(
 			'header' => $this->getHeaderTheme(true),
 			'template' => $this->base_theme,
 			'headers' => $headers,
@@ -79,9 +79,9 @@ final class TemplateBuilder{
 		$columns = $this->clearColumns($columnsSchema);
 
 		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'la-crud::Default';
+		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'lacrud::Default';
 
-		return \View::make($this->base_theme.'.pages.create',array(
+		return view($this->base_theme.'.pages.create',array(
 			'header' => $this->getHeaderTheme(),
 			'template' => $this->base_theme,
 			'columns' => $columns,
@@ -110,9 +110,9 @@ final class TemplateBuilder{
 		}
 
 		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'la-crud::Default';
+		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'lacrud::Default';
 
-		return \View::make($this->base_theme.'.pages.show',array(
+		return view($this->base_theme.'.pages.show',array(
 			'header' => $this->getHeaderTheme(),
 			'template' => $this->base_theme,
 			'columns' => $data,
@@ -138,9 +138,9 @@ final class TemplateBuilder{
 		}
 
 		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'la-crud::Default';
+		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'lacrud::Default';
 
-		return \View::make($this->base_theme.'.pages.edit',array(
+		return view($this->base_theme.'.pages.edit',array(
 			'header' => $this->getHeaderTheme(),
 			'template' => $this->base_theme,
 			'form' => $this->formBuilder->generateFormAddOrEdit($columns),
@@ -176,11 +176,11 @@ final class TemplateBuilder{
 		);
 		$moreInfo = $this->purifyHeaderInfo($this->controller->configuration->moreDataHeader());
 		$information = array_merge($moreInfo,$basic);
-    	return \View::make($this->base_theme.'.partials.header',$information);
+    	return view($this->base_theme.'.partials.header',$information);
     }
 
     private function getFooterTheme(){
-    	return \View::make($this->base_theme.'.partials.footer',$this->controller->configuration->moreDataFooter());
+    	return view($this->base_theme.'.partials.footer',$this->controller->configuration->moreDataFooter());
     }
 
     private function purifyHeaderInfo($data){

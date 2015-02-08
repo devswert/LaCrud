@@ -1,11 +1,11 @@
 @extends($template.'.layout')
 
 @section('header')
-    {{ $header }}
+    {!! $header !!}
 @stop
 
 @section('footer')
-    {{ $footer }}
+    {!! $footer !!}
 @stop
 
 @section('content')
@@ -40,9 +40,13 @@
                                                 <a href="{{ URL::route('lacrud.'.$entity.'.show',array('id' => $row->id)) }}" class="btn btn-info">
                                                     <span class="fa fa-search"></span>
                                                 </a>
-                                                <a href="{{ URL::route('lacrud.'.$entity.'.delete',array('id' => $row->id)) }}" class="btn btn-danger">
-                                                    <span class="fa fa-trash-o"></span>
-                                                </a>
+                                                <form action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $row->id)) }}" method="post">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button class="btn btn-danger">
+                                                        <span class="fa fa-trash-o"></span>
+                                                    </button>
+                                                </form>
                                             </td>
                                         @endif
                                     @endforeach

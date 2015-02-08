@@ -7,7 +7,7 @@ final class FormBuilder{
 
 	public function __construct($base_theme,$theme){
 		$base_theme = $base_theme.'/forms';
-		$this->base_theme = (is_dir($base_theme)) ? 'packages.DevSwert.LaCrud.'.$theme.'.forms' : 'la-crud::Default.forms';
+		$this->base_theme = (is_dir($base_theme)) ? 'packages.DevSwert.LaCrud.'.$theme.'.forms' : 'lacrud::Default.forms';
 	}
 
 	//Metodo publico para su funcion

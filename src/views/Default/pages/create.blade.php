@@ -1,11 +1,11 @@
 @extends($template.'.layout')
 
 @section('header')
-    {{ $header }}
+    {!! $header !!}
 @stop
 
 @section('footer')
-    {{ $footer }}
+    {!! $footer !!}
 @stop
 
 @section('content')
@@ -17,17 +17,18 @@
                     <div class="box-header">
                         <h3 class="box-title">Agregando nuevo registro</h3>
                     </div>
-                    {{ Form::open( array('url' => URL::route('lacrud.'.$entity.'.store') ) ) }}
+                    <form action="{{ URL::route('lacrud.'.$entity.'.store') }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="box-body">
-                            {{ $form }}
+                            {!! $form !!}
                             <div class="row">
                                 <div class="col-md-12">
                                     <button class="btn btn-success float-left" type="submit">Guardar</button>
-                                    <a href="{{ URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-danger float-left">Cancelar</a>
+                                    <a href="{{ \URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-danger float-left">Cancelar</a>
                                 </div>
                             </div>
                         </div>
-                    {{ Form::close() }}
+                    </form>
                 </div>
             </div>
         </div>

@@ -1,11 +1,11 @@
 @extends($template.'.layout')
 
 @section('header')
-    {{ $header }}
+    {!! $header !!}
 @stop
 
 @section('footer')
-    {{ $footer }}
+    {!! $footer !!}
 @stop
 
 @section('content')
@@ -17,9 +17,11 @@
                     <div class="box-header">
                         <h3 class="box-title">Edición de Registro</h3>
                     </div>
-                    {{ Form::open( array('url' => URL::route('lacrud.'.$entity.'.update', array('id' => $pk) ) , 'method' => 'put' ) ) }}
+                    <form action="{{ URL::route('lacrud.'.$entity.'.update', array('id' => $pk) ) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_method" value="PUT">
                         <div class="box-body">
-                            {{ $form }}
+                            {!! $form !!}
                         </div>
                         <div class="box-footer clearfix">
                             <a href="{{ URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-default pull-left">
@@ -29,7 +31,7 @@
                                 <span class="fa fa-refresh"></span> Actualizar
                             </button>
                         </div>
-                    {{ Form::close() }}
+                    </form>
                 </div>
             </div>
         </div>

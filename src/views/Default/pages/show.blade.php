@@ -1,11 +1,11 @@
 @extends($template.'.layout')
 
 @section('header')
-    {{ $header }}
+    {!! $header !!}
 @stop
 
 @section('footer')
-    {{ $footer }}
+    {!! $footer !!}
 @stop
 
 @section('content')
@@ -44,11 +44,13 @@
                         <a href="{{ URL::route('lacrud.'.$entity.'.edit',array('id' => $columns[$pk])) }}" class="btn btn-warning pull-right">
                             <span class="fa fa-edit"></span> Editar
                         </a>
-                        {{ Form::open(array( 'url' => URL::route('lacrud.'.$entity.'.delete',array('id' => $columns[$pk])) , 'method' => 'delete' ) ) }}
+                        <form action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $columns[$pk])) }}" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="btn btn-danger pull-right">
                                 <span class="fa fa-trash-o"></span> Eliminar
                             </button>
-                        {{ Form::close() }}
+                        </form>
                     </div>
                 </div>
             </div>

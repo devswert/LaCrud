@@ -1,5 +1,4 @@
-<?php 
-	namespace DevSwert\LaCrud;
+<?php namespace DevSwert\LaCrud;
 
 	use DevSwert\LaCrud\Controller\LaCrudController;
 	use DevSwert\LaCrud\Data\Manager\LaCrudManager;
@@ -10,6 +9,7 @@
 	class LaCrud{
 	 
 		private $prefix;
+		private $appName;
 
 	    public function RegisterCrud($routes){
 	    	foreach ($routes as $route => $controller){
@@ -26,7 +26,8 @@
 				$config->title(ucfirst(((is_numeric($route)) ? $controller : $route)));
 				$config->userInfo(\Auth::user());
 
-    			$functional = (!is_numeric($route)) ? new $controller($repository,$manager,$config) : new LaCrudController($repository,$manager,$config);
+				$controllerFinalName = $this->appName.'\\Http\\Controllers\\'.$controller;
+    			$functional = (!is_numeric($route)) ? new $controllerFinalName($repository,$manager,$config) : new LaCrudController($repository,$manager,$config);
 
 				Route::get($final, array('as' => 'lacrud.'.$table.'.index',function() use($functional){
 	    			return $functional->index();
@@ -61,6 +62,11 @@
 
 	    public function prefix($prefix){
 	    	$this->prefix = $prefix;
+	    	return $this;
+	    }
+
+	    public function appName($name){
+	    	$this->appName = $name;
 	    	return $this;
 	    }
 	 

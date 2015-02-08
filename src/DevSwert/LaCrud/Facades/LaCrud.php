@@ -10,9 +10,6 @@
 	     *
 	     * @return string
 	     */
-	    protected static function getFacadeAccessor() 
-	    { 
-	        return 'lacrud'; 
-	    }
+	    protected static function getFacadeAccessor() { return 'lacrud'; }
 	 
 	}
