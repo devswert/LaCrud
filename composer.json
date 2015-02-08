@@ -1,0 +1,21 @@
+{
+    "name": "LaCrud",
+    "description": "A Crud helper for Laravel",
+    "authors": [
+        {
+            "name": "Leonardo David",
+            "email": "leo.david.mm@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "doctrine/dbal": "~2.5"
+    },
+    "autoload": {
+        "classmap": [],
+        "psr-4": {
+            "DevSwert\\LaCrud\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
