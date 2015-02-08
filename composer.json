@@ -1,6 +1,8 @@
 {
-    "name": "LaCrud",
-    "description": "A Crud helper for Laravel",
+    "name": "devswert/lacrud",
+    "description": "CRUD helper for Laravel",
+    "keywords": ["crud","laravel"],
+    "homepage": "https://github.com/leonardoDavid/LaCrud",
     "authors": [
         {
             "name": "Leonardo David",
@@ -17,5 +19,5 @@
             "DevSwert\\LaCrud\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev"
 }
