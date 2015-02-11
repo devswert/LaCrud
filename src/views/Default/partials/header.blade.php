@@ -1,6 +1,6 @@
 <!-- Header Menu -->
 <header class="header">
-    <a href="{{ URL::route('lacrud.mi-tabla.index') }}" class="logo">
+    <a href="/" class="logo">
         LaCrud Admin
     </a>
     <nav class="navbar navbar-static-top" role="navigation">
@@ -65,21 +65,15 @@
             </div>
             <!-- Left Menu -->
             <ul class="sidebar-menu">
-                <li class="active">
-                    <a href="{{ URL::route('lacrud.mi-tabla.index') }}">
-                        <i class="fa fa-dashboard"></i> <span>Usuarios</span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-bar-chart-o"></i>
-                        <span>Sección</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="{{ URL::route('lacrud.posts.index') }}"><i class="fa fa-angle-double-right"></i> Otra Tabla</a></li>
-                    </ul>
-                </li>
+                @if( isset($entityNames) && is_array($entityNames) )
+                    @foreach ($entityNames as $tmp)
+                        <li>
+                            <a href="{{ URL::route('lacrud.'.$tmp['table'].'.index') }}">
+                                <i class="fa fa-table"></i> <span>{{ $tmp['name'] }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                @endif
             </ul>
         </section>
     </aside>

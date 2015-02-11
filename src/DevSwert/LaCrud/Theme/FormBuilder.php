@@ -14,8 +14,11 @@ final class FormBuilder{
 	public function generateFormAddOrEdit($fields){
 		if(is_array($fields) && count($fields) > 0){
 			$html = '';
-			foreach ($fields as $field){
-				if(!$field['isAutoincrement']){
+			foreach ($fields as $key => $field){
+				if( $key === 'hasManyRelation' ){
+					$html .= $this->addMultiSelectManyRelation($fields['hasManyRelation']);
+				}
+				else if(!$field['isAutoincrement']){
 					if(count($field['hasForeignKeys']) > 0){
 						$html .= $this->addSelectForeignKey($field);
 					}
@@ -83,6 +86,10 @@ final class FormBuilder{
 
 	private function addSelectForeignKey($field){
 		return \View::make($this->base_theme.'.select-foreign', compact('field'))->render();
+	}
+
+	private function addMultiSelectManyRelation($realtions){
+		return \View::make($this->base_theme.'.multiple-select', compact('realtions'))->render();
 	}
 
 	private function addTextEditor($field){

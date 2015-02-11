@@ -172,7 +172,8 @@ final class TemplateBuilder{
 			'subtitle' => $this->controller->configuration->subtitle(),
 			'userinfo' => $this->controller->configuration->userInfo(),
 			'entity' => \Request::segment(count(explode('/', \Request::path())) - $positionEntityOnURL ),
-			'isIndex' => $isIndex
+			'isIndex' => $isIndex,
+			'entityNames' => $this->resolveRoutesPublish()
 		);
 		$moreInfo = $this->purifyHeaderInfo($this->controller->configuration->moreDataHeader());
 		$information = array_merge($moreInfo,$basic);
@@ -241,7 +242,19 @@ final class TemplateBuilder{
 	            ));
 	        }
         }
+        $columns['hasManyRelation'] = $this->controller->repository->findManyRelations();
         return $columns;
+    }
+
+    private function resolveRoutesPublish(){
+    	$response = array();
+    	foreach ($this->controller->repository->routes() as $route => $controller){
+    		array_push($response,array(
+    			'table' => str_replace("_", "-",(is_numeric($route)) ? $controller : $route),
+    			'name'  => ucfirst( str_replace("_", " ", (is_numeric($route)) ? $controller : $route) )
+    		));
+    	}
+    	return $response;
     }
 
     //Throw exceptions
@@ -251,7 +264,7 @@ final class TemplateBuilder{
             $message.
             ' on ' . $trace[0]['file'] .
             ' in line ' . $trace[0]['line'],
-            E_USER_NOTICE);
+            E_USER_ERROR);
 		return null;
     }
 }

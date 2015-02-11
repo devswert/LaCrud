@@ -21,7 +21,11 @@
 				$entity->table = ((is_numeric($route)) ? $controller : $route);
 
 				$manager = new LaCrudManager($entity);
+
 				$repository = new LaCrudRepository($entity);
+
+				$repository->routes($routes);
+
 				$config = new Configuration();
 				$config->title(ucfirst(((is_numeric($route)) ? $controller : $route)));
 				$config->userInfo(\Auth::user());

@@ -33,14 +33,14 @@
                                         @if(strtolower($key) != 'actions')
                                             <td>{{ substr(strip_tags($row->$key),0,200) }}{{ (strlen(strip_tags($row->$key)) > 200 ) ? '...' : '' }}</td>
                                         @else
-                                            <td width="125">
+                                            <td width="140">
                                                 <a href="{{ URL::route('lacrud.'.$entity.'.edit',array('id' => $row->id)) }}" class="btn btn-warning">
                                                     <span class="fa fa-edit"></span>
                                                 </a>
                                                 <a href="{{ URL::route('lacrud.'.$entity.'.show',array('id' => $row->id)) }}" class="btn btn-info">
                                                     <span class="fa fa-search"></span>
                                                 </a>
-                                                <form action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $row->id)) }}" method="post">
+                                                <form style="display:inline-block;" action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $row->id)) }}" method="post">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button class="btn btn-danger">

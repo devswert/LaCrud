@@ -18,6 +18,8 @@ abstract class LaCrudBaseRepository {
     protected $queryBuilder;
     protected $all = false;
     protected $enumFields = array();
+    protected $routes = array();
+    private $error;
 
     abstract public function like($field,$value);
     abstract public function where($field,$operation,$value);
@@ -31,19 +33,21 @@ abstract class LaCrudBaseRepository {
     	return $this->entity->where($field,'=',$value)->first();
     }
 
-    final public function getColumns(){
+    final public function getColumns($table = null){
 
         //echo "<pre>";
         //dd( Type::getTypesMap() );
 
-        $connection = \DB::connection()->getDoctrineSchemaManager($this->entity->table);
+        $table = (is_null($table)) ? $this->entity->table : $table;
+
+        $connection = \DB::connection()->getDoctrineSchemaManager($table);
         $connection->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'enum');
 
         //echo "<pre>";
         //dd( get_class_methods($connection) );
         //dd( $connection->listTableColumns('posts') );
 
-        return $connection->listTableColumns($this->entity->table);
+        return $connection->listTableColumns($table);
     }
 
     final public function getPrimaryKey(){
@@ -181,6 +185,106 @@ abstract class LaCrudBaseRepository {
         return $options;
     }
 
+    final public function findManyRelations(){
+        if( count($this->manyRelations) > 0 ){
+            foreach ($this->manyRelations as $relations){
+                return $this->getOptionsForManyRelations($relations);
+            }
+        }
+        return false;
+    }
+
+    final private function getOptionsForManyRelations($relation = array()){
+        if( $this->validateRelations($relation) ){
+            $remoteKey = ( array_key_exists('key', $relation['remote']) ) ? $relation['remote']['key'] : 'id';
+            $queryOptions = \DB::table($relation['remote']['table'])->select($remoteKey.' as key');
+            if( array_key_exists('display',$relation['remote']) && $relation['remote']['display'] != "" ){
+                $queryOptions->addSelect($relation['remote']['display'].' as display');
+            }
+            return array(
+                'selected' => array(),
+                'options'  => $this->parseToArray($queryOptions->get())
+            );
+        }
+        $this->throwException($this->error);
+    }
+
+    final private function validateRelations($relation){
+        if( count($relation) != 3 && count($relation) != 4){
+            $this->error = '"Many relations" only support 3 or 4 options';
+            return false;
+        }
+
+        $passed = true;
+        //Validate local key
+        if( array_key_exists('local_key',$relation) ){
+            $columns = $this->getColumns();
+            if(!array_key_exists($relation['local_key'], $columns) ){
+                $this->error = 'The local primary key '.$relation['local_key']." doesn't exist on table ".$this->entity->table();
+                $passed = false;
+            }
+        }
+
+        //Validate Remote and Pivot Table
+        if( $passed ){
+            if( array_key_exists('pivot', $relation) && array_key_exists('remote', $relation) ){
+                foreach ($relation as $type => $options){
+                    if(strtolower($type) == 'pivot'){
+                        try {
+                            $columns = $this->getColumns($options['table']);
+                            if( count($columns) == 0 ){
+                                $this->error = 'The table '.$options['table']." don't exist";
+                                $passed = false;
+                                break;
+                            }
+                            if( !array_key_exists($options['local_key'] , $columns ) || !array_key_exists($options['remote_key'], $columns) ){
+                                $this->error = "One of fields don't exist on table ".$options['table'];
+                                $passed = false;
+                                break;
+                            }
+                        }catch (Exception $e) {
+                            $this->error = $e->getMessage();
+                            $passed = false;
+                            break;
+                        }
+                    }
+                    if(strtolower($type) == 'remote'){
+                        try {
+                            $columns = $this->getColumns($options['table']);
+                            if( !array_key_exists($options['display'] , $columns ) ){
+                                $this->error = "One of fields don't exist on table ".$options['table'];
+                                $passed = false;
+                                break;
+                            }
+                            if( array_key_exists('key', $options) && !array_key_exists($options['key'] , $columns ) ){
+                                $this->error = "The remote key ".$options['key']." don't exist on table ".$options['table'];
+                                $passed = false;
+                                break;
+                            }
+                        }catch (Exception $e) {
+                            $this->error = $e->getMessage();
+                            $passed = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            else{
+                $this->error = 'Lack one of options "pivot" or "remote" in the declaration';
+                $passed = false;
+            }
+        }
+        return $passed;
+    }
+
+    final private function parseToArray($object){
+        $response = array();
+        foreach ($object as $row){
+            array_push($response, get_object_vars($row));
+        }
+        return $response;
+    }
+
     final public function searchAliasValue($field,$value){
         $foreignsKeys = $this->getForeignKeys();
         foreach ($foreignsKeys as $key){
@@ -264,6 +368,26 @@ abstract class LaCrudBaseRepository {
     		return $this->findEnumFields($column);
     	}
     	return array();
+    }
+
+    final public function routes($routes = array()){
+        if( is_array($routes) && count($routes) > 0){
+            $this->routes = $routes;
+        }
+        else{
+            return $this->routes;
+        }
+    }
+
+    //Throw exceptions
+    private function throwException($message){
+        $trace = debug_backtrace();
+        trigger_error(
+            $message.
+            ' on ' . $trace[0]['file'] .
+            ' in line ' . $trace[0]['line'],
+            E_USER_ERROR);
+        return null;
     }
 
 }
