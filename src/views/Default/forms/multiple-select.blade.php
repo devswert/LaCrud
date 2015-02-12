@@ -6,8 +6,8 @@
 	    	</span>
 	    <!- Fin Validador -->
 	</label>
-    <select id='multiple-relation' multiple='multiple'>
-    	@foreach ($realtions['options'] as $row)
+    <select id='multiple-relation' multiple='multiple' name="manyrelation[]">
+    	@foreach ($relations['options'] as $row)
     		<option value='{{ $row['key'] }}'>{{ $row['display'] }}</option>
     	@endforeach
     </select>

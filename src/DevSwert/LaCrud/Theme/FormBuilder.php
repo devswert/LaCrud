@@ -15,14 +15,14 @@ final class FormBuilder{
 		if(is_array($fields) && count($fields) > 0){
 			$html = '';
 			foreach ($fields as $key => $field){
-				if( $key === 'hasManyRelation' ){
+				if( $key === 'hasManyRelation' && is_array($fields['hasManyRelation'])){
 					$html .= $this->addMultiSelectManyRelation($fields['hasManyRelation']);
 				}
 				else if(!$field['isAutoincrement']){
 					if(count($field['hasForeignKeys']) > 0){
 						$html .= $this->addSelectForeignKey($field);
 					}
-					else{
+					else if( is_array($field) ){
 						switch ($field['type']){
 							case 'string':
 								$html .= ( $field['isPassword'] ) ? $this->addPassword($field) : $this->addInput($field);
@@ -88,8 +88,8 @@ final class FormBuilder{
 		return \View::make($this->base_theme.'.select-foreign', compact('field'))->render();
 	}
 
-	private function addMultiSelectManyRelation($realtions){
-		return \View::make($this->base_theme.'.multiple-select', compact('realtions'))->render();
+	private function addMultiSelectManyRelation($relations){
+		return \View::make($this->base_theme.'.multiple-select', compact('relations'))->render();
 	}
 
 	private function addTextEditor($field){

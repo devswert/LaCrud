@@ -6,7 +6,10 @@
 	    	</span>
 	    @endif
 	</label>
-	<textarea name="{{ $field['name'] }}" id="editor1" rows="10" cols="80">
+	<textarea name="{{ $field['name'] }}" id="{{ md5($field['name']) }}" rows="10" cols="80">
 		{{ (Input::old($field['name'])) ? Input::old($field['name']) : $field['value'] }}
 	</textarea>
+	<script>
+		LaCrud.texteditors.push('{{ md5($field['name']) }}');
+	</script>
 </div>

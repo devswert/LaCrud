@@ -16,6 +16,12 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <script>
+            window.LaCrud = {
+                texteditors : Array(),
+                manyrelations : Array()
+            };
+        </script>
     </head>
     <body class="skin-black">
 
@@ -40,12 +46,23 @@
 
 		<script>
 			$(document).ready(function(){
+                //Init Datatables for indexs views
 				if($('#dataTableInfo').length > 0){
 			    	$('#dataTableInfo').DataTable();					
 				}
-                if( $('#editor1').length > 0 )
-                    CKEDITOR.replace( 'editor1' );
+
+                //Init texteditors avalaible
+                if( LaCrud.texteditors.length > 0 ){
+                    console.log(LaCrud.texteditors);
+                    for (var i = 0; i < LaCrud.texteditors.length; i++) {
+                        CKEDITOR.replace( LaCrud.texteditors[i] );
+                    };
+                }
+
+                //Init inputs type date
                 $('.datepicker').datepicker();
+
+                //Init fields manyrelations
                 if( $('#multiple-relation').length ){
                     $('#multiple-relation').multiSelect({
                         keepOrder: true,
