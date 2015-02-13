@@ -187,14 +187,14 @@ abstract class LaCrudBaseRepository {
 
     final public function findManyRelations(){
         if( count($this->manyRelations) > 0 ){
-            foreach ($this->manyRelations as $relations){
-                return $this->getOptionsForManyRelations($relations);
+            foreach ($this->manyRelations as $key => $relations){
+                return $this->getOptionsForManyRelations($key,$relations);
             }
         }
         return false;
     }
 
-    final private function getOptionsForManyRelations($relation = array()){
+    final private function getOptionsForManyRelations($key,$relation = array()){
         if( $this->validateRelations($relation) ){
             $remoteKey = ( array_key_exists('key', $relation['remote']) ) ? $relation['remote']['key'] : 'id';
             $queryOptions = \DB::table($relation['remote']['table'])->select($remoteKey.' as key');
@@ -202,6 +202,8 @@ abstract class LaCrudBaseRepository {
                 $queryOptions->addSelect($relation['remote']['display'].' as display');
             }
             return array(
+                'name' => strtolower( $key ),
+                'name_display' => ucfirst( str_replace("_", " ", $key) ),
                 'selected' => array(),
                 'options'  => $this->parseToArray($queryOptions->get())
             );
@@ -210,8 +212,8 @@ abstract class LaCrudBaseRepository {
     }
 
     final private function validateRelations($relation){
-        if( count($relation) != 3 && count($relation) != 4){
-            $this->error = '"Many relations" only support 3 or 4 options';
+        if( count($relation) != 2 && count($relation) != 3){
+            $this->error = '"Many relations" only support 2 or 3 options';
             return false;
         }
 

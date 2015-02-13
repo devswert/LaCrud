@@ -53,7 +53,6 @@
 
                 //Init texteditors avalaible
                 if( LaCrud.texteditors.length > 0 ){
-                    console.log(LaCrud.texteditors);
                     for (var i = 0; i < LaCrud.texteditors.length; i++) {
                         CKEDITOR.replace( LaCrud.texteditors[i] );
                     };
@@ -63,45 +62,45 @@
                 $('.datepicker').datepicker();
 
                 //Init fields manyrelations
-                if( $('#multiple-relation').length ){
-                    $('#multiple-relation').multiSelect({
-                        keepOrder: true,
-                        selectableFooter: "<input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
-                        selectionFooter: "<input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
-                        selectableHeader: "<div class='custom-header'>Selectable items</div>",
-                        selectionHeader: "<div class='custom-header'>Selection items</div>",
-                        afterInit: function(ms){
-                            var that = this,
-                                $selectableSearch = that.$selectableUl.prev(),
-                                $selectionSearch = that.$selectionUl.prev(),
-                                selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                                selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+                if( LaCrud.manyrelations.length > 0 ){
+                    for (var i = 0; i < LaCrud.manyrelations.length; i++) {
+                        $('#' + LaCrud.manyrelations[i]).multiSelect({
+                            keepOrder: true,
+                            selectableHeader: "<div class='custom-header'>Selectable items</div><input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
+                            selectionHeader: "<div class='custom-header'>Selection items</div><input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
+                            afterInit: function(ms){
+                                var that = this,
+                                    $selectableSearch = that.$selectableUl.prev(),
+                                    $selectionSearch = that.$selectionUl.prev(),
+                                    selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                                    selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
 
-                            that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                            .on('keydown', function(e){
-                                if (e.which === 40){
-                                    that.$selectableUl.focus();
-                                    return false;
-                                }
-                            });
+                                that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                                .on('keydown', function(e){
+                                    if (e.which === 40){
+                                        that.$selectableUl.focus();
+                                        return false;
+                                    }
+                                });
 
-                            that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                            .on('keydown', function(e){
-                                if (e.which == 40){
-                                    that.$selectionUl.focus();
-                                    return false;
-                                }
-                            });
-                        },
-                        afterSelect: function(){
-                            this.qs1.cache();
-                            this.qs2.cache();
-                        },
-                        afterDeselect: function(){
-                            this.qs1.cache();
-                            this.qs2.cache();
-                        }
-                    });
+                                that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                                .on('keydown', function(e){
+                                    if (e.which == 40){
+                                        that.$selectionUl.focus();
+                                        return false;
+                                    }
+                                });
+                            },
+                            afterSelect: function(){
+                                this.qs1.cache();
+                                this.qs2.cache();
+                            },
+                            afterDeselect: function(){
+                                this.qs1.cache();
+                                this.qs2.cache();
+                            }
+                        });
+                    };
                 }
 			});
 		</script>
