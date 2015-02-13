@@ -99,7 +99,7 @@ abstract class LaCrudBaseController extends Controller{
 			return $this->notAccess($message);
 		}
 
-		if( $this->manager->save($this->repository->isPassword) ){
+		if( $this->manager->save($this->repository->isPassword,$this->repository->manyRelations) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) ) .'.index' )
 				->with('success_message','Register created succesfully');
 		}
@@ -117,7 +117,7 @@ abstract class LaCrudBaseController extends Controller{
 		}
 
 		$pk = $this->repository->getPrimaryKey();
-		if( $this->manager->update($pk,$id,$this->repository->isPassword) ){
+		if( $this->manager->update($pk,$id,$this->repository->isPassword,$this->repository->manyRelations) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.index' )
 				->with('success_message','Register updated succesfully');
 		}

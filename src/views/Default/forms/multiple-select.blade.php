@@ -6,7 +6,7 @@
 	    	</span>
 	    @endif
 	</label>
-    <select id='{{ md5("MultipleSelect".$relations["name"]) }}' multiple='multiple' name="manyrelation{{ $relations['name'] }}[]">
+    <select id='{{ md5("MultipleSelect".$relations["name"]) }}' multiple='multiple' name="manyRelations#{{ $relations['name'] }}[]">
     	@foreach ($relations['options'] as $row)
     		<option value='{{ $row['key'] }}'>{{ $row['display'] }}</option>
     	@endforeach
