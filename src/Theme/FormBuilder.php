@@ -1,5 +1,4 @@
-<?php
-namespace DevSwert\LaCrud\Theme;
+<?php namespace DevSwert\LaCrud\Theme;
 
 final class FormBuilder{
 

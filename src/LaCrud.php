@@ -23,7 +23,6 @@
 				$manager = new LaCrudManager($entity);
 
 				$repository = new LaCrudRepository($entity);
-
 				$repository->routes($routes);
 
 				$config = new Configuration();

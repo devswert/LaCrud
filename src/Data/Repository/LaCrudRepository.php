@@ -1,6 +1,4 @@
-<?php
-
-namespace DevSwert\LaCrud\Data\Repository;
+<?php namespace DevSwert\LaCrud\Data\Repository;
 
 use DevSwert\LaCrud\Data\Entity\LaCrudBaseEntity;
 

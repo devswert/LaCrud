@@ -1,10 +1,13 @@
-<?php 
-namespace DevSwert\LaCrud\Controller;
+<?php namespace DevSwert\LaCrud\Controller;
 
 use DevSwert\LaCrud\Theme\TemplateBuilder;
-use SimpleCrud\Http\Controllers\Controller;
+use Illuminate\Foundation\Bus\DispatchesCommands;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
-abstract class LaCrudBaseController extends Controller{
+abstract class LaCrudBaseController extends BaseController{
+
+	use DispatchesCommands, ValidatesRequests;
 
 	public $repository;
 	public $manager;

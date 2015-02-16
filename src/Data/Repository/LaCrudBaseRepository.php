@@ -1,5 +1,4 @@
-<?php
-namespace DevSwert\LaCrud\Data\Repository;
+<?php namespace DevSwert\LaCrud\Data\Repository;
 
 use Doctrine\DBAL\Types\Type;
 use DevSwert\LaCrud\Data\BaseTable;
@@ -51,9 +50,6 @@ abstract class LaCrudBaseRepository {
     }
 
     final public function getPrimaryKey(){
-        
-        
-
         $connection = \DB::connection()->getDoctrineSchemaManager($this->entity->table);
         $connection->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'enum');
         $table = $connection->listTableDetails($this->entity->table);
@@ -185,30 +181,68 @@ abstract class LaCrudBaseRepository {
         return $options;
     }
 
-    final public function findManyRelations(){
+    final public function findManyRelations($local_pk = null){
         if( count($this->manyRelations) > 0 ){
             foreach ($this->manyRelations as $key => $relations){
-                return $this->getOptionsForManyRelations($key,$relations);
+                return $this->getOptionsForManyRelations($key,$relations,$local_pk);
             }
         }
         return false;
     }
 
-    final private function getOptionsForManyRelations($key,$relation = array()){
+    final private function getOptionsForManyRelations($key,$relation = array(),$local_pk){
         if( $this->validateRelations($relation) ){
             $remoteKey = ( array_key_exists('key', $relation['remote']) ) ? $relation['remote']['key'] : 'id';
             $queryOptions = \DB::table($relation['remote']['table'])->select($remoteKey.' as key');
+            $querySelected = \DB::table($relation['pivot']['table'])->select($relation['pivot']['remote_key'].' as key');
+
             if( array_key_exists('display',$relation['remote']) && $relation['remote']['display'] != "" ){
                 $queryOptions->addSelect($relation['remote']['display'].' as display');
             }
+            if(!is_null($local_pk)){
+                $querySelected->where($relation['pivot']['local_key'],'=',$local_pk);
+            }
+
             return array(
                 'name' => strtolower( $key ),
                 'name_display' => ucfirst( str_replace("_", " ", $key) ),
-                'selected' => array(),
-                'options'  => $this->parseToArray($queryOptions->get())
+                'options'  => $this->addSelectedKey($queryOptions->get(),$querySelected->get())
             );
         }
         $this->throwException($this->error);
+    }
+
+    final private function addSelectedKey($options,$selected){
+        $response = array();
+        if(is_object($options))
+            $options = $this->parseToArray($options);
+        if(is_object($selected))
+            $selected = $this->parseToArray($selected);
+
+        foreach ($options as $value){
+            $isSelected = $this->ifSelectedInManyRelation($value->key,$selected);
+            array_push($response, array(
+                'key' => $value->key,
+                'display' => $value->display,
+                'isSelected' => $isSelected,
+                'select' => ($isSelected) ? 'selected' : ''
+            ));
+        }
+
+        return $response;
+    }
+
+    final private function ifSelectedInManyRelation($pk,&$selected){
+        $isSelected = false;
+        foreach ($selected as $key => $values){
+            $values = get_object_vars($values);
+            if($values['key'] == $pk){
+                unset($selected[$key]);
+                $isSelected = true;
+                break;
+            }
+        }
+        return $isSelected;
     }
 
     final private function validateRelations($relation){

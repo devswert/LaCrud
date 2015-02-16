@@ -1,5 +1,4 @@
-<?php
-namespace DevSwert\LaCrud\Data;
+<?php namespace DevSwert\LaCrud\Data;
 
 
 class BaseTable {

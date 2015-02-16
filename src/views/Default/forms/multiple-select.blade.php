@@ -8,7 +8,7 @@
 	</label>
     <select id='{{ md5("MultipleSelect".$relations["name"]) }}' multiple='multiple' name="manyRelations#{{ $relations['name'] }}[]">
     	@foreach ($relations['options'] as $row)
-    		<option value='{{ $row['key'] }}'>{{ $row['display'] }}</option>
+    		<option value='{{ $row['key'] }}' {{ $row['select'] }}>{{ $row['display'] }}</option>
     	@endforeach
     </select>
     <script>

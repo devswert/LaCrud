@@ -1,6 +1,4 @@
-<?php 
-
-namespace DevSwert\LaCrud\Controller;
+<?php namespace DevSwert\LaCrud\Controller;
 
 use DevSwert\LaCrud\Configuration;
 use DevSwert\LaCrud\Data\Manager\LaCrudBaseManager;

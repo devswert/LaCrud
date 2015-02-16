@@ -1,5 +1,4 @@
-<?php
-namespace DevSwert\LaCrud\Type;
+<?php namespace DevSwert\LaCrud\Type;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -7,8 +6,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 /**
  * My custom datatype.
  */
-class Enum extends Type
-{
+class Enum extends Type{
     const ENUM = 'enum';
 
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)

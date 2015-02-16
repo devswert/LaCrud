@@ -1,5 +1,4 @@
-<?php
-namespace DevSwert\LaCrud\Theme;
+<?php namespace DevSwert\LaCrud\Theme;
 
 use DevSwert\LaCrud\Controller\LaCrudBaseController;
 
@@ -128,11 +127,11 @@ final class TemplateBuilder{
 		$information = $this->controller->repository->find($primaryKey,$primary);
 
 		$columnsSchema = $this->controller->repository->getColumns();
-		$columns = $this->clearColumns($columnsSchema,$information);
+		$columns = $this->clearColumns($columnsSchema,$information,$primary);
 
 
 		foreach ($columns as $key => $value){
-			if( $value['isAutoincrement'] ){
+			if( array_key_exists('isAutoincrement', $value) && $value['isAutoincrement'] ){
 				unset($columns[$key]);
 			}
 		}
@@ -194,7 +193,7 @@ final class TemplateBuilder{
     	return $data;
     }
 
-    private function clearColumns($columnsSchema,$model = null ){
+    private function clearColumns($columnsSchema,$model = null, $primary = 0){
     	$columns = array();
 		$primaryKey = $this->controller->repository->getPrimaryKey();
 		$foreignKeys = $this->controller->repository->getForeignKeys();
@@ -242,7 +241,7 @@ final class TemplateBuilder{
 	            ));
 	        }
         }
-        $columns['hasManyRelation'] = $this->controller->repository->findManyRelations();
+        $columns['hasManyRelation'] = $this->controller->repository->findManyRelations($primary);
         return $columns;
     }
 

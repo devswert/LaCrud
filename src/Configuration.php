@@ -1,5 +1,4 @@
-<?php
-namespace DevSwert\LaCrud;
+<?php namespace DevSwert\LaCrud;
 
 final class Configuration {
 
