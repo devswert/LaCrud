@@ -33,14 +33,19 @@ abstract class LaCrudBaseManager {
             $register = $this->entity->where($pk,'=',$value)->first();
 
             try{
+                /*
                 foreach ($this->attributes as $key => $value){
                     if( in_array($key,$encryptFields) )
                         $value = \Hash::make($value);
                     $register->{$key} = $value;
                 }
+                */
+                $this->assignValues($encryptFields,$register);
+
                 $register->table = $this->entity->table;
                 $register->save();
                 if( count($this->manyRelations) > 0 ){
+                    $this->entity = $register;
                     $this->assignRelationsValues();
                 }
                 return true;
@@ -66,8 +71,8 @@ abstract class LaCrudBaseManager {
         $this->configManyRelations = $relations;
         $this->attributes = \Input::all();
         $this->filterInformation();
-        $this->assignValues( $encryptFields );
         if( $this->isValid() ){
+            $this->assignValues( $encryptFields );
             try{
                 $this->entity->save();
                 if( count($this->manyRelations) > 0 ){
@@ -99,7 +104,7 @@ abstract class LaCrudBaseManager {
     final public function upload(){}
 
     //Functionals methods
-    final private function assignValues($encryptFields){
+    final private function assignValues($encryptFields, &$entity = null){
         foreach ($this->attributes as $key => $value){
             if( strlen($key) >= 11 && substr($key, 0, 13) == "manyRelations" ){
                 $tmp = explode("#",$key);
@@ -108,7 +113,10 @@ abstract class LaCrudBaseManager {
             else{
                 if( in_array($key,$encryptFields) )
                     $value = \Hash::make($value);
-                $this->entity->{$key} = $value;
+                if( is_null($entity) )
+                    $this->entity->{$key} = $value;
+                else
+                    $entity->{$key} = $value;
             }
         }
     }
@@ -117,7 +125,7 @@ abstract class LaCrudBaseManager {
         foreach ($this->manyRelations as $key => $values){
             if( array_key_exists($key, $this->configManyRelations) ){
                 $local_key = ( array_key_exists('local_key', $this->configManyRelations[$key]) ) ? $this->configManyRelations[$key]['local_key'] : 'id';
-                \DB::table( $this->configManyRelations[$key]['pivot']['table'] )->where( $local_key , '=', $this->entity->$local_key)->delete();
+                \DB::table( $this->configManyRelations[$key]['pivot']['table'] )->where( $this->configManyRelations[$key]['pivot']['local_key'] , '=', $this->entity->$local_key)->delete();
                 $inserts_values = array();
                 $cont = 0;
                 foreach ($values as $remote_key){
