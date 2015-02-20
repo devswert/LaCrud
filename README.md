@@ -1,25 +1,25 @@
 ## LaCrud
 
-LaCrud es una herramienta que te ayudara a crear CRUDs en Laravel de manera rápida y sin romper patrones de diseño dentro de tu aplicación, ya que solo es un componente que se integra y trata de amoldar a tu desarrollo.
+LaCrud es una herramienta que te ayudará a crear CRUDs en Laravel de manera rápida y sin romper patrones de diseño dentro de tu aplicación, ya que solo es un componente que se integra y trata de amoldar a tu desarrollo.
 
-LaCrud esta construido para que funcione con la nueva versión 5 de Laravel :)
+LaCrud está construido para que funcione con la nueva **versión 5 de Laravel** :)
 
-En estos momentos LaCrud se encuentra en una versión alpha y en desarrollo, pero ya se pueden aprocehar algunos de sus beneficios que son:
+En estos momentos, LaCrud se encuentra en una versión alpha y en desarrollo, pero ya se pueden aprovehar algunos de sus beneficios que son:
 
- * Solo indicas el nombre de la tabla y LaCrud realizara el trabajo por ti.
+ * Indicar el nombre de la tabla y LaCrud realizará el trabajo por ti.
  * Todo el proceso de un CRUD funcionado en solo unos minutos.
- * Deteccion de relaciones nativas de tu Base de Datos
- * Capacidad de crear relaciones foraneas falsas por código.
+ * Detección de relaciones nativas de tu Base de Datos
+ * Capacidad de crear relaciones foráneas falsas por código.
  * Lograr agregar relaciones "n a n" en tu entidad.
  * Capacidad de denegar operaciones del CRUD.
  * Filtro de contenido en la vista.
- * Visualización de solo algunos campos en las distatinta operaciones.
+ * Visualización de solo algunos campos en las distintas operaciones.
 
-Aunque LaCrud ya esta operativo en su gran medida, también tiene objetivos para su versión 1, entre ellos:
+Aunque LaCrud ya está operativo en su gran medida, también tiene objetivos para su versión 1, entre ellos:
 
  * Pasar los botones y textos como paquete de idiomas.
- * Soporte para que agreges tu propio tema en LaCrud.
- * Helper para carga de imagenes y manipulación de estas.
+ * Soporte para que agregues tu propio tema en LaCrud.
+ * Helper para carga de imágenes y manipulación de estas.
  * Funciones de imprimir y exportar datos.
  * Callbacks para las diferentes operaciones.
 
@@ -37,7 +37,7 @@ O agregarlo en tu composer.json y ejecutar composer update
 "devswert/lacrud": "dev-master"
 ```
 
-Una vez terminada la instalación debes agregar el ServiceProvider y Facade de LaCrud en tu configuración (config/app.php)
+Una vez terminada la instalación, debes agregar el ServiceProvider y Facade de LaCrud en tu configuración (config/app.php)
 
  - ServiceProvider
 ```
@@ -51,7 +51,7 @@ Una vez terminada la instalación debes agregar el ServiceProvider y Facade de L
 
 ## Uso Básico
 
-Una vez instalado LaCrud ya puedes usarlo directamente en tu archivo de rutas de la siguiente manera:
+Una vez instalado LaCrud, ya puedes usarlo directamente en tu archivo de rutas de la siguiente manera:
 
 ```php
 LaCrud::RegisterCrud([
@@ -60,14 +60,14 @@ LaCrud::RegisterCrud([
     'otra_tabla'
 ]);
 ```
-Donde cada elemento del array es una tabla en la Base de Datos, ahora, se podría ingresar desde el navegador a:
+Donde cada elemento del array es una tabla en la Base de Datos. Ahora, se podría ingresar desde el navegador a:
 
 ```
 http://proyecto.app/users
 ```
-El tema integrado por defecto en LaCrud listara todas las tablas en un menu lateral.
+El tema integrado por defecto en LaCrud listará todas las tablas en un menu lateral.
 
-Ya que mediante el array solo se registra el nombre de la tabla y no una ruta hasta ella, se puede agregar el metodo prefix para indicar un path común.
+Ya que mediante el array solo se registra el nombre de la tabla y no una ruta hasta ella, se puede agregar el metodo `prefix` para indicar un path común.
 
 ```php
 LaCrud::prefix('admin')
@@ -78,7 +78,7 @@ LaCrud::prefix('admin')
 ]);
 ```
 
-De esta manera ahora se debe acceder al mediante:
+De esta manera, ahora se debe acceder a él mediante:
 
 ```
 http://proyecto.app/admin/users
@@ -96,15 +96,15 @@ LaCrud::appName('MyAppNamespace')
     'otra_tabla'
 ]);
 ```
-**Ya que Laravel 5 trabaja en base a namespaces es necesario indicarle a LaCrud en que namespace tiene tu aplicación, para que asi pueda acceder a los controladores**
+**Ya que Laravel 5 trabaja en base a namespaces es necesario indicarle a LaCrud en que namespace tiene tu aplicación, para que así pueda acceder a los controladores**
 
-El proximo paso es crear un controlador como se ve en la sección que sigue.
+El próximo paso es crear un controlador como se ve en la sección que sigue.
 
 ## Personaliza tu entidad
 
 ### Controlador Básico
 
-Una vez asignado el nombre del controlador en la ruta lo que resta es crear el archivo, en el caso de Laravel 5 estos se encuentran en app/Http/Controllers/. En el caso del ejemplo anterior, debemos crear UsersController.php, el cual deberia lucir asi:
+Una vez asignado el nombre del controlador en la ruta, lo que resta es crear el archivo, en el caso de Laravel 5 estos se encuentran en `app/Http/Controllers/`. En el caso del ejemplo anterior, debemos crear `UsersController.php`, el cual debería lucir así:
 
 ```php
 <?php namespace TuNamespaceApp\Http\Controllers;
@@ -158,21 +158,22 @@ class UsersController extends LaCrudBaseController {
 
 }
 ```
-Como se logra apreciar, nuestro controlador ya no extiende del *BaseController* que ofrece Laravel, debe hacerlo de *LaCrudBaseController*, esta es una clase abstracta, por lo que la implementación de los metodos index, create, store, show, edit, update y destroy son **obligatorios**.
+
+Como se logra apreciar, nuestro controlador ya no extiende el *BaseController* que ofrece Laravel, debe hacerlo de *LaCrudBaseController*, esta es una clase abstracta, por lo que la implementación de los metodos `index`, `create`, `store`, `show`, `edit`, `update` y `destroy` son **obligatorios**.
 
 El constructor de nuestro *UsersController* ahora debe recibir 3 dependencias, un objecto *LaCrudRepository, LaCrudManager* y *Configuration*.
 
-Mediantes los objetos *LaCrudRepository* y *LaCrudManager* es como se realizaran y ajustaran las configuraciones necesarias según cada desarrollador en su proyecto, por ejemplo, el cambio básico es indicar el verdadero nombre de la tabla que se usara como Entidad de datos.
+Mediantes los objetos *LaCrudRepository* y *LaCrudManager* es como se realizarán y ajustarán las configuraciones necesarias según cada desarrollador en su proyecto. Por ejemplo, el cambio básico es indicar el verdadero nombre de la tabla que se usará como Entidad de datos.
 
-La configuración de Titulo y Subtitulo son opcionales, y se utilizan en el Template del sistema.
+La configuración de Título y Subtítulo son opcionales, y se utilizan en el Template del sistema.
 
-**Todos los cambios y configuraciones en los repositorios y manager es recomendable que los realicen en el constructor, para que asi aplique en todas las rutas**
+**Todos los cambios y configuraciones en los repositorios y manager es recomendable que los realicen en el constructor, para que asi aplique en todas las rutas**.
 
-### Restrincion de campos
+### Restricción de campos
 
-Existen dos tipos de restrinciones de campos, unos para que el usuario **no los pueda visualizar**, estos aplican en la lista completa de los registros y el detalle de cada uno, y el otro tipo son los que el usaurio **no puede editar**, aqui se omitirian los campos para agregar un nuevo registro o actualizarlo.
+Existen dos tipos de restricciones de campos, unos para que el usuario **no los pueda visualizar**, estos aplican en la lista completa de los registros y el detalle de cada uno, y el otro tipo son los que el usuario **no puede editar**, aquñi se omitirán los campos para agregar un nuevo registro o actualizarlo.
 
-Para que un usuario no pueda ver ciertos campos debemos editar una propiedad en nuestro repositorio:
+Para que un usuario no pueda ver ciertos campos, debemos editar una propiedad en nuestro repositorio:
 
 ```php
 $this->repository->fieldsNotSee = array(
@@ -191,7 +192,7 @@ $this->manager->fieldsNotEdit = array(
 
 ### Alias de campos
 
-Si no queremos que se despliege el nombre original de nuestro campo de la Base de Datos podemos establecer alias:
+Si no queremos que se despliege el nombre original de nuestro campo de la Base de Datos, podemos establecer alias:
 
 ```php
 $this->repository->displayAs = array(
@@ -203,7 +204,7 @@ $this->repository->displayAs = array(
 
 ### Campos tipo password
 
-Si tenemos campos del necesitamos sean password o se les aplique un Hash de Laravel debemos modificar:
+Si tenemos campos que necesitamos sean `password` o se les aplique un Hash de Laravel, debemos modificar:
 
 ```php
 $this->repository->isPassword = array(
@@ -211,9 +212,9 @@ $this->repository->isPassword = array(
 );
 ```
 
-### Relaciones foraneas nativas
+### Relaciones foráneas nativas
 
-Si un campo tiene una clave foranea establecida por Base de Datos esta se cargara automaticamente en un select mostrando por valor la clave primaria de la "tabla remota", pero si queremos desplegar otro dato para visualizar podemos:
+Si un campo tiene una clave foránea establecida por Base de Datos esta se cargará automáticamente en un `select` mostrando por valor la clave primaria de la "tabla remota", pero si queremos desplegar otro dato para visualizar podemos:
 
 ```php
 $this->repository->nameDisplayForeignsKeys = array(
@@ -223,9 +224,9 @@ $this->repository->nameDisplayForeignsKeys = array(
 
 Donde *parent_id* en el nombre del campo de la tabla local que posee la relación y *username* en un campo de la "tabla remota",
 
-### Relaciones foraneas falsas
+### Relaciones foráneas falsas
 
-Muchas veces por razones que nadie entiende la relaciones no estan establecidas por Base de Datos, LaCrud ofrece una configuración para que crees tus relaciones por código, las cuales tendran el mismo efecto que una relación nativa:
+Muchas veces, por razones que nadie entiende, la relaciones no están establecidas por Base de Datos. LaCrud ofrece una configuración para que crees tus relaciones por código, las cuales tendrán el mismo efecto que una relación nativa:
 
 ```php
 $this->repository->fakeRelation = array(
@@ -253,7 +254,7 @@ $this->repository->manyRelations = array(
 			//'order' => 'order'
 		),
 		'remote' => array(
-			'key' => 'id', // By default is id
+			'key' => 'id', // By default it's id
 			'table' => 'posts',
 			'display' => 'title'
 		),
@@ -264,7 +265,7 @@ $this->repository->manyRelations = array(
 
 ### Validaciones
 
-Es muy importante mantener siempre estar validando lo que ingresar nuestro usuario final al sistema, por lo que LaCrud aprovecha el sistema de validaciones de Laravel para resolverlo, esto debe ser aplicado de la siguiente manera:
+Es muy importante mantener siempre estar validando lo que ingrese nuestro usuario final al sistema, por lo que LaCrud aprovecha el sistema de validaciones de Laravel para resolverlo, esto debe ser aplicado de la siguiente manera:
 
 ```php
 $this->manager->rules = array(
@@ -310,7 +311,7 @@ En el caso que en la lista general se necesite mostrar un filtro de registros La
 	}
 ```
 
-Entre los metodos disponibles para filtrar se puede acceder a:
+Entre los métodos disponibles para filtrar, se puede acceder a:
 
 - Like
 
@@ -327,7 +328,7 @@ $this->repository->where($field,$operator,$value);
 ```php
 $this->repository->limit(5);
 ```
-- Ordernar Por
+- Ordenar Por
 
 ```php
 $this->repository->orderBy($field,$method);
