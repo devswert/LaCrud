@@ -171,7 +171,7 @@ La configuración de Título y Subtítulo son opcionales, y se utilizan en el Te
 
 ### Restricción de campos
 
-Existen dos tipos de restricciones de campos, unos para que el usuario **no los pueda visualizar**, estos aplican en la lista completa de los registros y el detalle de cada uno, y el otro tipo son los que el usuario **no puede editar**, aquñi se omitirán los campos para agregar un nuevo registro o actualizarlo.
+Existen dos tipos de restricciones de campos, unos para que el usuario **no los pueda visualizar**, estos aplican en la lista completa de los registros y el detalle de cada uno, y el otro tipo son los que el usuario **no puede editar**, aquí se omitirán los campos para agregar un nuevo registro o actualizarlo.
 
 Para que un usuario no pueda ver ciertos campos, debemos editar una propiedad en nuestro repositorio:
 
