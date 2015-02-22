@@ -15,7 +15,7 @@
             <div class="col-xs-12">
                 <div class="box box-success">
                     <div class="box-header">
-                        <h3 class="box-title">Agregando nuevo registro</h3>
+                        <h3 class="box-title">{{ trans('lacrud::templates.title_create') }}</h3>
                     </div>
                     <form action="{{ URL::route('lacrud.'.$entity.'.store') }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -23,8 +23,8 @@
                             {!! $form !!}
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-success float-left" type="submit">Guardar</button>
-                                    <a href="{{ \URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-danger float-left">Cancelar</a>
+                                    <button class="btn btn-success float-left" type="submit">{{ trans('lacrud::templates.save_register') }}</button>
+                                    <a href="{{ \URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-danger float-left">{{ trans('lacrud::templates.cancel') }}</a>
                                 </div>
                             </div>
                         </div>

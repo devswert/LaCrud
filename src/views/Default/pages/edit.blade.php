@@ -15,7 +15,7 @@
             <div class="col-xs-12">
                 <div class="box box-success">
                     <div class="box-header">
-                        <h3 class="box-title">Edición de Registro</h3>
+                        <h3 class="box-title">{{ trans('lacrud::templates.title_edit') }}</h3>
                     </div>
                     <form action="{{ URL::route('lacrud.'.$entity.'.update', array('id' => $pk) ) }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -25,10 +25,10 @@
                         </div>
                         <div class="box-footer clearfix">
                             <a href="{{ URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-default pull-left">
-                                <span class="fa fa-arrow-circle-o-left"></span> Volver
+                                <span class="fa fa-arrow-circle-o-left"></span> {{ trans('lacrud::templates.back') }}
                             </a>
                             <button type="submit" class="btn btn-primary pull-right">
-                                <span class="fa fa-refresh"></span> Actualizar
+                                <span class="fa fa-refresh"></span> {{ trans('lacrud::templates.update_register') }}
                             </button>
                         </div>
                     </form>

@@ -160,7 +160,7 @@ abstract class LaCrudBaseController extends BaseController{
 		}
 		else{
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.index' )
-				->with('error_message',$this->manager->getErrors());
+				->withErrors($this->manager->getErrors());
 		}
 	}
 

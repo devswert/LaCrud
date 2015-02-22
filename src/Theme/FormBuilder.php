@@ -1,12 +1,19 @@
 <?php namespace DevSwert\LaCrud\Theme;
 
+use DevSwert\LaCrud\Utils;
+
 final class FormBuilder{
+	use Utils;
 
 	private $base_theme;
 
 	public function __construct($base_theme,$theme){
 		$base_theme = $base_theme.'/forms';
-		$this->base_theme = (is_dir($base_theme)) ? 'packages.DevSwert.LaCrud.'.$theme.'.forms' : 'lacrud::Default.forms';
+
+		if(!is_dir($base_theme)){
+			$this->throwException("Don't exist a 'forms' folder in your Theme for LaCrud");
+		}
+		$this->base_theme = 'lacrud::'.$theme.'.forms.';
 	}
 
 	//Metodo publico para su funcion

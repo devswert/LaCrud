@@ -1,8 +1,10 @@
 <?php namespace DevSwert\LaCrud\Theme;
 
 use DevSwert\LaCrud\Controller\LaCrudBaseController;
+use DevSwert\LaCrud\Utils;
 
 final class TemplateBuilder{
+	use Utils;
 
 	private $controller;
 	private $base_theme;
@@ -11,12 +13,15 @@ final class TemplateBuilder{
 	public function __construct(LaCrudBaseController $controller){
 		$this->controller = $controller;
 		$this->formBuilder = new FormBuilder($this->resolveFolderTheme(),$this->controller->configuration->theme());
+
+		$themePublishFolder = $this->resolveFolderTheme();
+		if(!is_dir($themePublishFolder)){
+			$this->throwException('Don\'t exist a Theme for LaCrud');
+		}
+		$this->base_theme = 'lacrud::'.$this->controller->configuration->theme().'.';
 	}
 
 	public function deniedForAccess($message){
-		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->configuration->theme() : 'lacrud::Default.';
-
 		return view($this->base_theme.'partials.403',array(
 			'header' => $this->getHeaderTheme(true,1),
 			'template' => $this->base_theme,
@@ -59,9 +64,6 @@ final class TemplateBuilder{
 		$headers = $this->controller->repository->getHeaders($columns,true);
 		$data = $this->controller->repository->filterData($this->controller->repository->get());
 
-		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->configuration->theme() : 'lacrud::Default.';
-
 		return view($this->base_theme.'pages.index',array(
 			'header' => $this->getHeaderTheme(true),
 			'template' => $this->base_theme,
@@ -77,10 +79,7 @@ final class TemplateBuilder{
 		$columnsSchema = $this->controller->repository->getColumns();
 		$columns = $this->clearColumns($columnsSchema);
 
-		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'lacrud::Default';
-
-		return view($this->base_theme.'.pages.create',array(
+		return view($this->base_theme.'pages.create',array(
 			'header' => $this->getHeaderTheme(),
 			'template' => $this->base_theme,
 			'columns' => $columns,
@@ -108,10 +107,7 @@ final class TemplateBuilder{
 			}
 		}
 
-		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'lacrud::Default';
-
-		return view($this->base_theme.'.pages.show',array(
+		return view($this->base_theme.'pages.show',array(
 			'header' => $this->getHeaderTheme(),
 			'template' => $this->base_theme,
 			'columns' => $data,
@@ -129,17 +125,13 @@ final class TemplateBuilder{
 		$columnsSchema = $this->controller->repository->getColumns();
 		$columns = $this->clearColumns($columnsSchema,$information,$primary);
 
-
 		foreach ($columns as $key => $value){
-			if( array_key_exists('isAutoincrement', $value) && $value['isAutoincrement'] ){
+			if( is_array($value) && array_key_exists('isAutoincrement', $value) && $value['isAutoincrement'] ){
 				unset($columns[$key]);
 			}
 		}
 
-		$themePublishFolder = $this->resolveFolderTheme();
-		$this->base_theme = (is_dir($themePublishFolder)) ? 'packages.DevSwert.LaCrud.'.$this->controller->theme : 'lacrud::Default';
-
-		return view($this->base_theme.'.pages.edit',array(
+		return view($this->base_theme.'pages.edit',array(
 			'header' => $this->getHeaderTheme(),
 			'template' => $this->base_theme,
 			'form' => $this->formBuilder->generateFormAddOrEdit($columns),
@@ -162,7 +154,7 @@ final class TemplateBuilder{
 
     private function resolveFolderTheme(){
     	$this->controller->configuration->theme((is_null($this->controller->configuration->theme())) ? 'Default' : $this->controller->configuration->theme());
-		return app_path().'/views/packages/DevSwert/LaCrud/'.$this->controller->configuration->theme();
+    	return base_path().'/resources/views/vendor/LaCrud/Themes/'.$this->controller->configuration->theme();
     }
 
     private function getHeaderTheme($isIndex = false,$positionEntityOnURL = 0){
@@ -176,7 +168,7 @@ final class TemplateBuilder{
 		);
 		$moreInfo = $this->purifyHeaderInfo($this->controller->configuration->moreDataHeader());
 		$information = array_merge($moreInfo,$basic);
-    	return view($this->base_theme.'.partials.header',$information);
+    	return view($this->base_theme.'partials.header',$information);
     }
 
     private function getFooterTheme(){
@@ -254,16 +246,5 @@ final class TemplateBuilder{
     		));
     	}
     	return $response;
-    }
-
-    //Throw exceptions
-    private function throwException($message){
-    	$trace = debug_backtrace();
-		trigger_error(
-            $message.
-            ' on ' . $trace[0]['file'] .
-            ' in line ' . $trace[0]['line'],
-            E_USER_ERROR);
-		return null;
     }
 }

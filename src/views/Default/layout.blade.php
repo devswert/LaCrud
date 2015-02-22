@@ -6,12 +6,12 @@
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="/packages/DevSwert/LaCrud/Default/css/datepicker/datepicker3.css" />
-        <link rel="stylesheet" type="text/css" href="/packages/DevSwert/LaCrud/Default/css/datatables/dataTables.bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="/packages/DevSwert/LaCrud/Default/css/daterangepicker/daterangepicker-bs3.css" />
-        <link rel="stylesheet" type="text/css" href="/packages/DevSwert/LaCrud/Default/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" />
-        <link rel="stylesheet" type="text/css" href="/packages/DevSwert/LaCrud/Default/css/multiselect/multi-select.css" />
-        <link rel="stylesheet" type="text/css" href="/packages/DevSwert/LaCrud/Default/css/AdminLTE.css" />
+        <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/datepicker/datepicker3.css" />
+        <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/datatables/dataTables.bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/daterangepicker/daterangepicker-bs3.css" />
+        <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" />
+        <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/multiselect/multi-select.css" />
+        <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/AdminLTE.css" />
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
@@ -34,15 +34,15 @@
         <script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
         <script src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
 
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/daterangepicker/daterangepicker.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/datepicker/bootstrap-datepicker.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/iCheck/icheck.min.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/datatables/jquery.dataTables.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/datatables/dataTables.bootstrap.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/multiselect/jquery.multi-select.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/plugins/multiselect/jquery.quicksearch.js"></script>
-        <script src="/packages/DevSwert/LaCrud/Default/js/AdminLTE/app.js"></script>
+        <script src="/LaCrud/Default/js/plugins/daterangepicker/daterangepicker.js"></script>
+        <script src="/LaCrud/Default/js/plugins/datepicker/bootstrap-datepicker.js"></script>
+        <script src="/LaCrud/Default/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+        <script src="/LaCrud/Default/js/plugins/iCheck/icheck.min.js"></script>
+        <script src="/LaCrud/Default/js/plugins/datatables/jquery.dataTables.js"></script>
+        <script src="/LaCrud/Default/js/plugins/datatables/dataTables.bootstrap.js"></script>
+        <script src="/LaCrud/Default/js/plugins/multiselect/jquery.multi-select.js"></script>
+        <script src="/LaCrud/Default/js/plugins/multiselect/jquery.quicksearch.js"></script>
+        <script src="/LaCrud/Default/js/AdminLTE/app.js"></script>
 
 		<script>
 			$(document).ready(function(){
@@ -66,8 +66,8 @@
                     for (var i = 0; i < LaCrud.manyrelations.length; i++) {
                         $('#' + LaCrud.manyrelations[i]).multiSelect({
                             keepOrder: true,
-                            selectableHeader: "<div class='custom-header'>Selectable items</div><input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
-                            selectionHeader: "<div class='custom-header'>Selection items</div><input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
+                            selectableHeader: "<div class='custom-header'> {{ trans('lacrud::templates.mr_selections_title') }} </div><input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
+                            selectionHeader: "<div class='custom-header'> {{ trans('lacrud::templates.mr_options_title') }} </div><input type='text' class='form-control' autocomplete='off' placeholder='Search?'>",
                             afterInit: function(ms){
                                 var that = this,
                                     $selectableSearch = that.$selectableUl.prev(),

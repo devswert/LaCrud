@@ -34,10 +34,10 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Perfil</a>
+                                <a href="#" class="btn btn-default btn-flat">Profile</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">Salir</a>
+                                <a href="#" class="btn btn-default btn-flat">Logout</a>
                             </div>
                         </li>
                     </ul>
@@ -56,7 +56,7 @@
                     <img src="img/avatar3.png" class="img-circle" alt="User Image" />
                 </div>
                 <div class="pull-left info">
-                    <p>Hola 
+                    <p>Hi  
                         @if(is_object($userinfo))
                             {{ $userinfo->full_name }}
                         @endif
@@ -88,7 +88,7 @@
             </h1>
             @if( $isIndex )
                 <a href="{{ URL::route('lacrud.'.$entity.'.create') }}" class="btn btn-success pull-right">
-                    <span class="fa fa-plus-circle"></span> Agregar
+                    <span class="fa fa-plus-circle"></span> {{ trans('lacrud::templates.new_register') }}
                 </a>
             @endif
         </section>

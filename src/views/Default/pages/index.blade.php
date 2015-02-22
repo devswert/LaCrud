@@ -12,6 +12,15 @@
      <!-- Main content -->
     <section class="content">
         <div class="row">
+            @if (isset($success_message))
+                <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Yeah!</strong> {{ $success_message }}
+                    </div>
+                </div>                
+            @endif
+
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-body table-responsive">
