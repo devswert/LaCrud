@@ -58,6 +58,12 @@ final class TemplateBuilder{
 		}
 	}
 
+	public function confirmHardDelete(){
+		$entity = \Request::segment(count(explode('/', \Request::path()) ) -1 );
+		$id = \Request::segment(count(explode('/', \Request::path()) ) );
+		return view($this->base_theme.'.forms.hardDelete',array('entity' => $entity,'id' => $id));
+	}
+
 	private function renderList(){
 		$columns = $this->controller->repository->getColumns();
 		$keys = $this->controller->repository->getHeaders($columns);
@@ -70,6 +76,7 @@ final class TemplateBuilder{
 			'headers' => $headers,
 			'keys' => $keys,
 			'data' => $data,
+			'permission' => $this->getPermissions(),
 			'entity' => \Request::segment(count(explode('/', \Request::path()))),
 			'footer' => $this->getFooterTheme()
 		));
@@ -83,6 +90,7 @@ final class TemplateBuilder{
 			'header' => $this->getHeaderTheme(),
 			'template' => $this->base_theme,
 			'columns' => $columns,
+			'permission' => $this->getPermissions(),
 			'form' => $this->formBuilder->generateFormAddOrEdit($columns),
 			'entity' => \Request::segment(count(explode('/', \Request::path())) -1 ),
 			'footer' => $this->getFooterTheme()
@@ -112,6 +120,7 @@ final class TemplateBuilder{
 			'template' => $this->base_theme,
 			'columns' => $data,
 			'pk' => $primaryKey,
+			'permission' => $this->getPermissions(),
 			'alias' => $this->controller->repository->displayAs,
 			'entity' => \Request::segment(count(explode('/', \Request::path())) -1 ),
 			'footer' => $this->getFooterTheme()
@@ -164,6 +173,7 @@ final class TemplateBuilder{
 			'userinfo' => $this->controller->configuration->userInfo(),
 			'entity' => \Request::segment(count(explode('/', \Request::path())) - $positionEntityOnURL ),
 			'isIndex' => $isIndex,
+			'permission' => $this->getPermissions(),
 			'entityNames' => $this->resolveRoutesPublish()
 		);
 		$moreInfo = $this->purifyHeaderInfo($this->controller->configuration->moreDataHeader());
@@ -172,7 +182,12 @@ final class TemplateBuilder{
     }
 
     private function getFooterTheme(){
-    	return view($this->base_theme.'.partials.footer',$this->controller->configuration->moreDataFooter());
+    	$basic = array(
+    		'permission' => $this->getPermissions()
+    	);
+    	$moreInfo = $this->controller->configuration->moreDataFooter();
+    	$information = array_merge($moreInfo,$basic);
+    	return view($this->base_theme.'.partials.footer',$information);
     }
 
     private function purifyHeaderInfo($data){
@@ -218,10 +233,15 @@ final class TemplateBuilder{
 			    else
 			    	$value = '';
 
+			    $type = $column->getType()->getName();
+				if( $type == 'text' ){
+					$type = ( array_key_exists($column->getName(),$this->controller->manager->disabledTextEditor) ) ? 'simpletext' : 'text' ;
+				}
+
 	            array_push($columns,array(
 	            	'name' => $column->getName(),
 	            	'name_display' => ucfirst(str_replace('_',' ',$nameColumn )),
-	            	'type' => $column->getType()->getName(),
+	            	'type' => $type,
 	            	'default' => $column->getDefault(),
 	            	'length' => $column->getLength(),
 	            	'options' => $this->controller->repository->getOptionsEnum($column),
@@ -246,5 +266,16 @@ final class TemplateBuilder{
     		));
     	}
     	return $response;
+    }
+
+    private function getPermissions(){
+    	return array(
+    		'add' => $this->controller->canAdd(),
+    		'edit' => $this->controller->canEdit(),
+    		'delete' => $this->controller->canDelete(),
+    		'show' => $this->controller->canRead(),
+    		'print' => $this->controller->canPrint(),
+    		'export' => $this->controller->canExport()
+    	);
     }
 }

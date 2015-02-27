@@ -12,11 +12,19 @@
      <!-- Main content -->
     <section class="content">
         <div class="row">
-            @if (isset($success_message))
+            @if (Session::has('success_message'))
                 <div class="col-md-12">
                     <div class="alert alert-success alert-dismissible" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <strong>Yeah!</strong> {{ $success_message }}
+                        <strong>Yeah!</strong> {{ Session::get('success_message') }}
+                    </div>
+                </div>                
+            @endif
+            @if (Session::has('error_message'))
+                <div class="col-md-12">
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>D'oh!</strong> {!! Session::get('error_message') !!}
                     </div>
                 </div>                
             @endif
@@ -40,19 +48,25 @@
                                             <td>{{ substr(strip_tags($row->$key),0,200) }}{{ (strlen(strip_tags($row->$key)) > 200 ) ? '...' : '' }}</td>
                                         @else
                                             <td width="140">
-                                                <a href="{{ URL::route('lacrud.'.$entity.'.edit',array('id' => $row->id)) }}" class="btn btn-warning">
-                                                    <span class="fa fa-edit"></span>
-                                                </a>
-                                                <a href="{{ URL::route('lacrud.'.$entity.'.show',array('id' => $row->id)) }}" class="btn btn-info">
-                                                    <span class="fa fa-search"></span>
-                                                </a>
-                                                <form style="display:inline-block;" action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $row->id)) }}" method="post">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <button class="btn btn-danger">
-                                                        <span class="fa fa-trash-o"></span>
-                                                    </button>
-                                                </form>
+                                                @if ($permission['edit'])
+                                                    <a href="{{ URL::route('lacrud.'.$entity.'.edit',array('id' => $row->id)) }}" class="btn btn-warning">
+                                                        <span class="fa fa-edit"></span>
+                                                    </a>
+                                                @endif
+                                                @if ($permission['show'])
+                                                    <a href="{{ URL::route('lacrud.'.$entity.'.show',array('id' => $row->id)) }}" class="btn btn-info">
+                                                        <span class="fa fa-search"></span>
+                                                    </a>
+                                                @endif
+                                                @if ($permission['delete'])
+                                                    <form style="display:inline-block;" action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $row->id)) }}" method="post">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <button class="btn btn-danger">
+                                                            <span class="fa fa-trash-o"></span>
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             </td>
                                         @endif
                                     @endforeach

@@ -39,9 +39,17 @@ abstract class LaCrudBaseController extends BaseController{
 		return $this;
 	}
 
+	final public function canEdit(){
+		return $this->canEdit;
+	}
+
 	final public function unsetAdd(){
 		$this->canAdd = false;
 		return $this;
+	}
+
+	final public function canAdd(){
+		return $this->canAdd;
 	}
 
 	final public function unsetDelete(){
@@ -49,9 +57,17 @@ abstract class LaCrudBaseController extends BaseController{
 		return $this;
 	}
 
+	final public function canDelete(){
+		return $this->canDelete;
+	}
+
 	final public function unsetExport(){
 		$this->canExport = false;
 		return $this;
+	}
+
+	final public function canExport(){
+		return $this->canExport;
 	}
 
 	final public function unsetRead(){
@@ -59,9 +75,17 @@ abstract class LaCrudBaseController extends BaseController{
 		return $this;
 	}
 
+	final public function canRead(){
+		return $this->canRead;
+	}
+
 	final public function unsetPrint(){
 		$this->canPrint = false;
 		return $this;
+	}
+
+	final public function canPrint(){
+		return $this->canPrint;
 	}
 
 	final public function showCreatedAt(){
@@ -89,7 +113,7 @@ abstract class LaCrudBaseController extends BaseController{
 
 	final protected function baseCreate(){
 		if( !$this->canAdd ){
-			$message = "You dont have access for create a new regiter";
+			$message = trans('lacrud::notifications.not_add');
 			return $this->notAccess($message);
 		}
 
@@ -98,42 +122,42 @@ abstract class LaCrudBaseController extends BaseController{
 
 	final protected function baseStore(){
 		if( !$this->canAdd ){
-			$message = "You dont have access for create a new regiter";
+			$message = trans('lacrud::notifications.not_add');
 			return $this->notAccess($message);
 		}
 
 		if( $this->manager->save($this->repository->isPassword,$this->repository->manyRelations) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) ) .'.index' )
-				->with('success_message','Register created succesfully');
+				->with('success_message',trans('lacrud::notifications.success_add'));
 		}
 		else{
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) ) .'.create' )
 				->withInput()
-				->withErrors($this->manager->getErrors());
+				->with('error_message',$this->manager->getErrors());
 		}
 	}
 
 	final protected function baseUpdate($id){
 		if( !$this->canEdit ){
-			$message = "You dont have access for update a regiter";
+			$message = trans('lacrud::notifications.not_edit');
 			return $this->notAccess($message);
 		}
 
 		$pk = $this->repository->getPrimaryKey();
 		if( $this->manager->update($pk,$id,$this->repository->isPassword,$this->repository->manyRelations) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.index' )
-				->with('success_message','Register updated succesfully');
+				->with('success_message',trans('lacrud::notifications.success_edit'));
 		}
 		else{
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.edit', array( 'id' => $id ) )
 				->withInput()
-				->withErrors($this->manager->getErrors());
+				->with('error_message',$this->manager->getErrors());
 		}
 	}
 
 	final protected function baseShow($id){
 		if( !$this->canRead ){
-			$message = "You dont have access for view a regiter";
+			$message = trans('lacrud::notifications.not_read');
 			return $this->notAccess($message);
 		}
 		return $this->render($id);
@@ -141,7 +165,7 @@ abstract class LaCrudBaseController extends BaseController{
 
 	final protected function baseEdit($id){
 		if( !$this->canEdit ){
-			$message = "You dont have access for edit a regiter";
+			$message = trans('lacrud::notifications.not_edit');
 			return $this->notAccess($message);
 		}
 		return $this->render($id);
@@ -149,18 +173,21 @@ abstract class LaCrudBaseController extends BaseController{
 
 	final protected function baseDestroy($id){
 		if( !$this->canDelete ){
-			$message = "You dont have access for delete a regiter";
+			$message = trans('lacrud::notifications.not_delete');
 			return $this->notAccess($message);
 		}
 
 		$pk = $this->repository->getPrimaryKey();
 		if( $this->manager->delete($pk,$id) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.index' )
-				->with('success_message','Register deleted succesfully');
+				->with('success_message',trans('lacrud::notifications.success_delete'));
 		}
 		else{
+			$message = $this->manager->getErrors();
+			$this->templateBuilder = new TemplateBuilder($this);
+			$message = (\Session::has('error_code') && \Session::get('error_code') == 23000) ? $message." ".$this->templateBuilder->confirmHardDelete() : $message;
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.index' )
-				->withErrors($this->manager->getErrors());
+				->with('error_message',$message);
 		}
 	}
 

@@ -9,6 +9,7 @@ abstract class LaCrudBaseManager {
     protected $errors;
     public $rules = array();
     public $fieldsNotEdit = array();
+    public $disabledTextEditor = array();
 
     abstract public function doAfterDelete();
     abstract public function doAfterInsert();
@@ -89,14 +90,31 @@ abstract class LaCrudBaseManager {
     }
 
     final public function delete($pk,$value){
+        if(\Input::has('_forcedelete')){
+            $id = \Input::get('_forcedelete');
+            if( \Crypt::decrypt($id) == $value ){
+                return $this->forceDelete($pk,$value);
+            }
+            else{
+                $this->errors = trans('lacrud::notifications.invalid_key_forcedelete');
+                return false;
+            }
+        }
+
         $register = $this->entity->where($pk,'=',$value)->first();
         try{
             $register->table = $this->entity->table;
             $register->delete();
             return true;
         }
-        catch(Exception $e){
-            $this->errors = $e->getMessage();
+        catch(\PDOException $e){
+            if($e->getCode() == '23000'){
+                $this->errors = trans('lacrud::notifications.error_dependency');
+                 \Session::flash('error_code', 23000);
+            }
+            else{
+                $this->errors = $e->getMessage();
+            }
             return false;
         }
     }
@@ -104,6 +122,13 @@ abstract class LaCrudBaseManager {
     final public function upload(){}
 
     //Functionals methods
+    final private function forceDelete($pk,$value){
+        //Verificar si tiene fake relations
+        //Verificar si hay relaciones reales
+        //Verificar si hay many relations
+        return false;
+    }
+
     final private function assignValues($encryptFields, &$entity = null){
         foreach ($this->attributes as $key => $value){
             if( strlen($key) >= 11 && substr($key, 0, 13) == "manyRelations" ){

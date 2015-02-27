@@ -51,6 +51,9 @@ final class FormBuilder{
 							case 'text':
 								$html .= $this->addTextEditor($field);
 								break;
+							case 'simpletext':
+								$html .= $this->addTextarea($field);
+								break;
 							default:
 								$html .= $this->addInput($field);
 								break;
@@ -99,6 +102,10 @@ final class FormBuilder{
 	}
 
 	private function addTextEditor($field){
+		return \View::make($this->base_theme.'.textedit', compact('field'))->render();
+	}
+
+	private function addTextarea($field){
 		return \View::make($this->base_theme.'.textarea', compact('field'))->render();
 	}
 

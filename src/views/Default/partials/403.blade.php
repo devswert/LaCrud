@@ -1,11 +1,11 @@
 @extends($template.'.layout')
 
 @section('header')
-    {{ $header }}
+    {!! $header !!}
 @stop
 
 @section('footer')
-    {{ $footer }}
+    {!! $footer !!}
 @stop
 
 @section('content')

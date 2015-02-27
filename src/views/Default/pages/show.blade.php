@@ -41,16 +41,20 @@
                         <a href="{{ URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-default pull-left">
                             <span class="fa fa-arrow-circle-o-left"></span> {{ trans('lacrud::templates.back') }}
                         </a>
-                        <a href="{{ URL::route('lacrud.'.$entity.'.edit',array('id' => $columns[$pk])) }}" class="btn btn-warning pull-right">
-                            <span class="fa fa-edit"></span> {{ trans('lacrud::templates.update_register') }}
-                        </a>
-                        <form action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $columns[$pk])) }}" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-danger pull-right">
-                                <span class="fa fa-trash-o"></span> {{ trans('lacrud::templates.delete_register') }}
-                            </button>
-                        </form>
+                        @if ($permission['edit'])
+                            <a href="{{ URL::route('lacrud.'.$entity.'.edit',array('id' => $columns[$pk])) }}" class="btn btn-warning pull-right">
+                                <span class="fa fa-edit"></span> {{ trans('lacrud::templates.update_register') }}
+                            </a>
+                        @endif
+                        @if ($permission['delete'])
+                            <form action="{{  URL::route('lacrud.'.$entity.'.delete',array('id' => $columns[$pk])) }}" method="post">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger pull-right">
+                                    <span class="fa fa-trash-o"></span> {{ trans('lacrud::templates.delete_register') }}
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>

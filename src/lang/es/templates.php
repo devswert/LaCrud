@@ -13,6 +13,7 @@ return [
 	'delete_register' => 'Borrar',
 	'back' => 'Volver',
 	'cancel' => 'Cancelar',
+	'force_delete' => 'Borrar Todo',
 
 	//Titles
 	'title_edit' => 'Editando registro',

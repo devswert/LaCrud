@@ -86,7 +86,7 @@
                 {{ $title }}
                 <small>{{ $subtitle }}</small>
             </h1>
-            @if( $isIndex )
+            @if( $isIndex && $permission['add'] )
                 <a href="{{ URL::route('lacrud.'.$entity.'.create') }}" class="btn btn-success pull-right">
                     <span class="fa fa-plus-circle"></span> {{ trans('lacrud::templates.new_register') }}
                 </a>
