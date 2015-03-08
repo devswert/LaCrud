@@ -34,13 +34,6 @@ abstract class LaCrudBaseManager {
             $register = $this->entity->where($pk,'=',$value)->first();
 
             try{
-                /*
-                foreach ($this->attributes as $key => $value){
-                    if( in_array($key,$encryptFields) )
-                        $value = \Hash::make($value);
-                    $register->{$key} = $value;
-                }
-                */
                 $this->assignValues($encryptFields,$register);
 
                 $register->table = $this->entity->table;
