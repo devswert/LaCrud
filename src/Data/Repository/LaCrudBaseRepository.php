@@ -16,6 +16,7 @@ abstract class LaCrudBaseRepository {
     public $nameDisplayForeignsKeys = array();
     public $fakeRelation = array();
     public $manyRelations = array();
+    public $uploads = array();
     protected $queryBuilder;
     protected $all = false;
     protected $enumFields = array();
