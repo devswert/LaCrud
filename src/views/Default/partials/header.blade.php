@@ -16,9 +16,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="glyphicon glyphicon-user"></i>
                         <span>
-                            @if(is_object($userinfo))
-                                {{ $userinfo->full_name }}
-                            @endif
+                           Full Name
                         <i class="caret"></i></span>
                     </a>
                     <ul class="dropdown-menu">
@@ -26,9 +24,7 @@
                         <li class="user-header bg-gray">
                             <img src="img/avatar3.png" class="img-circle" alt="User Image" />
                             <p>
-                                @if(is_object($userinfo))
-                                    {{ $userinfo->full_name }}
-                                @endif
+                                Full Name
                             </p>
                         </li>
                         <!-- Menu Footer-->
@@ -57,9 +53,7 @@
                 </div>
                 <div class="pull-left info">
                     <p>Hi  
-                        @if(is_object($userinfo))
-                            {{ $userinfo->full_name }}
-                        @endif
+                        Full Name
                     </p>
                 </div>
             </div>

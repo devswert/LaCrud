@@ -12,12 +12,12 @@ class LaCrudServiceProvider extends ServiceProvider {
 	 */
 	public function boot(){
 		Type::addType('enum', 'DevSwert\LaCrud\Type\Enum');
-		$this->loadViewsFrom(base_path('resources/views/vendor/LaCrud/Themes'), 'lacrud');
+		$this->loadViewsFrom(base_path('resources/views/vendor/LaCrud'), 'lacrud');
 		$this->loadTranslationsFrom(base_path('resources/lang/LaCrud'), 'lacrud');
 		
 		$this->publishes([
 		    __DIR__.'/public/Default' => public_path('/LaCrud/Default'),
-		    __DIR__.'/views/Default' => base_path('resources/views/vendor/LaCrud/Themes/Default'),
+		    __DIR__.'/views/Default' => base_path('resources/views/vendor/LaCrud/Default'),
 		    __DIR__.'/lang/en' => base_path('resources/lang/LaCrud/en'),
 		    __DIR__.'/lang/es' => base_path('resources/lang/LaCrud/es'),
 		]);

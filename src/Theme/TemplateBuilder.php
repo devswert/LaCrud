@@ -2,6 +2,7 @@
 
 use DevSwert\LaCrud\Controller\LaCrudBaseController;
 use DevSwert\LaCrud\Utils;
+use Carbon\Carbon;
 
 final class TemplateBuilder{
 	use Utils;
@@ -9,6 +10,11 @@ final class TemplateBuilder{
 	private $controller;
 	private $base_theme;
 	private $formBuilder;
+
+	private $templateHeader;
+	private $templateFooter;
+	private $templateForbidden;
+	private $templateLayout;
 
 	public function __construct(LaCrudBaseController $controller){
 		$this->controller = $controller;
@@ -19,12 +25,22 @@ final class TemplateBuilder{
 			$this->throwException('Don\'t exist a Theme for LaCrud');
 		}
 		$this->base_theme = 'lacrud::'.$this->controller->configuration->theme().'.';
+
+		$headerPath    = base_path().'/resources/views/partials/header.blade.php';
+		$footerPath    = base_path().'/resources/views/partials/footer.blade.php';
+		$forbiddenPath = base_path().'/resources/views/partials/403.blade.php';
+		$layoutPath    = base_path().'/resources/views/layout.blade.php';
+
+		$this->templateHeader    = ( file_exists($headerPath) ? 'partials.header' : $this->base_theme.'partials.header' );
+		$this->templateFooter    = ( file_exists($footerPath) ? 'partials.footer' : $this->base_theme.'partials.footer' );
+		$this->templateForbidden = ( file_exists($forbiddenPath) ? 'partials.403' : $this->base_theme.'partials.403' );
+		$this->templateLayout    = ( file_exists($layoutPath) ? 'layout' : $this->base_theme.'layout' );
 	}
 
 	public function deniedForAccess($message){
-		return view($this->base_theme.'partials.403',array(
+		return view($this->templateForbidden,array(
 			'header' => $this->getHeaderTheme(true,1),
-			'template' => $this->base_theme,
+			'template' => $this->templateLayout,
 			'message' => $message,
 			'footer' => $this->getFooterTheme()
 		));
@@ -72,7 +88,7 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.index',array(
 			'header' => $this->getHeaderTheme(true),
-			'template' => $this->base_theme,
+			'template' => $this->templateLayout,
 			'headers' => $headers,
 			'keys' => $keys,
 			'data' => $data,
@@ -88,7 +104,7 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.create',array(
 			'header' => $this->getHeaderTheme(),
-			'template' => $this->base_theme,
+			'template' => $this->templateLayout,
 			'columns' => $columns,
 			'permission' => $this->getPermissions(),
 			'form' => $this->formBuilder->generateFormAddOrEdit($columns),
@@ -117,7 +133,7 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.show',array(
 			'header' => $this->getHeaderTheme(),
-			'template' => $this->base_theme,
+			'template' => $this->templateLayout,
 			'columns' => $data,
 			'pk' => $primaryKey,
 			'permission' => $this->getPermissions(),
@@ -142,7 +158,7 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.edit',array(
 			'header' => $this->getHeaderTheme(),
-			'template' => $this->base_theme,
+			'template' => $this->templateLayout,
 			'form' => $this->formBuilder->generateFormAddOrEdit($columns),
 			'pk' => $primary,
 			'alias' => $this->controller->repository->displayAs,
@@ -163,14 +179,13 @@ final class TemplateBuilder{
 
     private function resolveFolderTheme(){
     	$this->controller->configuration->theme((is_null($this->controller->configuration->theme())) ? 'Default' : $this->controller->configuration->theme());
-    	return base_path().'/resources/views/vendor/LaCrud/Themes/'.$this->controller->configuration->theme();
+    	return base_path().'/resources/views/vendor/LaCrud/'.$this->controller->configuration->theme();
     }
 
     private function getHeaderTheme($isIndex = false,$positionEntityOnURL = 0){
     	$basic = array(
 			'title' => $this->controller->configuration->title(),
 			'subtitle' => $this->controller->configuration->subtitle(),
-			'userinfo' => $this->controller->configuration->userInfo(),
 			'entity' => \Request::segment(count(explode('/', \Request::path())) - $positionEntityOnURL ),
 			'isIndex' => $isIndex,
 			'permission' => $this->getPermissions(),
@@ -178,7 +193,7 @@ final class TemplateBuilder{
 		);
 		$moreInfo = $this->purifyHeaderInfo($this->controller->configuration->moreDataHeader());
 		$information = array_merge($moreInfo,$basic);
-    	return view($this->base_theme.'partials.header',$information);
+    	return view($this->templateHeader,$information);
     }
 
     private function getFooterTheme(){
@@ -187,7 +202,7 @@ final class TemplateBuilder{
     	);
     	$moreInfo = $this->controller->configuration->moreDataFooter();
     	$information = array_merge($moreInfo,$basic);
-    	return view($this->base_theme.'.partials.footer',$information);
+    	return view($this->templateFooter,$information);
     }
 
     private function purifyHeaderInfo($data){
@@ -221,25 +236,47 @@ final class TemplateBuilder{
 	        }
 
 	        if($canAddColumn){
-	        	$nameColumn = (array_key_exists($column->getName(), $this->controller->repository->displayAs)) ? $this->controller->repository->displayAs[$column->getName()] : $column->getName();
-		        if(is_object($model)){
-		        	try{
-			    		$value = $model->{$column->getName()};
-			    	}
-			    	catch(Exeption $e){
-			    		$value = '';
-			    	}
-			    }
-			    else
-			    	$value = '';
 
-			    $type = $column->getType()->getName();
+	        	$type = $column->getType()->getName();
 				if( $type == 'text' ){
 					$type = ( array_key_exists($column->getName(),$this->controller->manager->disabledTextEditor) ) ? 'simpletext' : 'text' ;
 				}
 				if( $type == 'string' ){
 					$type = ( array_key_exists($column->getName(),$this->controller->repository->uploads) ) ? 'upload' : 'string' ;
 				}
+
+	        	$nameColumn = (array_key_exists($column->getName(), $this->controller->repository->displayAs)) ? $this->controller->repository->displayAs[$column->getName()] : $column->getName();
+		        if(is_object($model)){
+		        	try{
+		        		if( !in_array($type, ['datetime','date','timestamp']) ){
+			    			$value = $model->{$column->getName()};
+		        		}
+		        		else if($type == 'date'){
+		        			$tmp = explode('-',$model->{$column->getName()});
+		        			$value = $tmp[2].'-'.$tmp[1].'-'.$tmp[0];
+		        		}
+		        		else{
+		        			$value = [
+		        				'date' => $model->{$column->getName()}->format('d-m-Y'),
+		        				'time' => $model->{$column->getName()}->toTimeString()
+		        			];
+		        		}
+			    	}
+			    	catch(Exeption $e){
+			    		$value = '';
+			    	}
+			    }
+			    else{
+			    	if( in_array($type, ['datetime','timestamp']) ){
+						$value = [
+	        				'date' => '',
+	        				'time' => ''
+	        			];
+			    	}
+			    	else{
+			    		$value = '';
+			    	}
+			    }
 
 	            array_push($columns,array(
 	            	'name' => $column->getName(),

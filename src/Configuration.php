@@ -24,13 +24,6 @@ final class Configuration {
             $this->subtitle = $subtitle;
     }
 
-    public function userInfo($data = null){
-        if(is_null($data))
-            return $this->userInfo;
-        else
-            $this->userInfo = $data;
-    }
-
     public function theme($name = null){
         if(is_null($name))
             return $this->theme;

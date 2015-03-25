@@ -34,7 +34,7 @@ final class FormBuilder{
 								$html .= ( $field['isPassword'] ) ? $this->addPassword($field) : $this->addInput($field);
 								break;
 							case 'date':
-								$html .= $this->addDateTime($field);
+								$html .= $this->addSimpleDate($field);
 								break;
 							case 'datetime':
 								$html .= $this->addDateTime($field);
@@ -87,6 +87,10 @@ final class FormBuilder{
 
 	private function addDateTime($field){
 		return \View::make($this->base_theme.'.datetime', compact('field'))->render();
+	}
+
+	private function addSimpleDate($field){
+		return \View::make($this->base_theme.'.date', compact('field'))->render();
 	}
 
 	private function addSelect($field){

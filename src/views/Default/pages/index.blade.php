@@ -1,4 +1,4 @@
-@extends($template.'.layout')
+@extends($template)
 
 @section('header')
     {!! $header !!}

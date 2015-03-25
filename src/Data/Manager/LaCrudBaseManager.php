@@ -64,6 +64,11 @@ abstract class LaCrudBaseManager {
     final public function save($encryptFields,$relations){
         $this->configManyRelations = $relations;
         $this->attributes = \Input::all();
+
+        dd(\Input::all());
+        $carbon = Carbon::createFromFormat('d-m-Y h:i:s','12-10-2015 00:00:00');
+        dd( $carbon->toDateTimeString() );
+
         $this->filterInformation();
         if( $this->isValid() ){
             $this->assignValues( $encryptFields );

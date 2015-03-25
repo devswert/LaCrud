@@ -7,6 +7,7 @@
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/datepicker/datepicker3.css" />
+        <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/timepicker/bootstrap-timepicker.min.css" />
         <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/datatables/dataTables.bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/daterangepicker/daterangepicker-bs3.css" />
         <link rel="stylesheet" type="text/css" href="/LaCrud/Default/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" />
@@ -36,6 +37,7 @@
 
         <script src="/LaCrud/Default/js/plugins/daterangepicker/daterangepicker.js"></script>
         <script src="/LaCrud/Default/js/plugins/datepicker/bootstrap-datepicker.js"></script>
+        <script src="/LaCrud/Default/js/plugins/timepicker/bootstrap-timepicker.min.js"></script>
         <script src="/LaCrud/Default/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
         <script src="/LaCrud/Default/js/plugins/iCheck/icheck.min.js"></script>
         <script src="/LaCrud/Default/js/plugins/datatables/jquery.dataTables.js"></script>
@@ -59,7 +61,14 @@
                 }
 
                 //Init inputs type date
-                $('.datepicker').datepicker();
+                $('.datepicker').datepicker({
+                    format : 'dd-mm-yyyy'
+                });
+                $(".timepicker").timepicker({
+                    showInputs: false,
+                    showSeconds: true,
+                    showMeridian: false
+                });
 
                 //Init fields manyrelations
                 if( LaCrud.manyrelations.length > 0 ){

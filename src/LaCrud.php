@@ -27,7 +27,6 @@
 
 				$config = new Configuration();
 				$config->title(ucfirst(((is_numeric($route)) ? $controller : $route)));
-				$config->userInfo(\Auth::user());
 
 				$controllerFinalName = $this->appName.'\\Http\\Controllers\\'.$controller;
     			$functional = (!is_numeric($route)) ? new $controllerFinalName($repository,$manager,$config) : new LaCrudController($repository,$manager,$config);
