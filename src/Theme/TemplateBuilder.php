@@ -219,6 +219,10 @@ final class TemplateBuilder{
     	$columns = array();
 		$primaryKey = $this->controller->repository->getPrimaryKey();
 		$foreignKeys = $this->controller->repository->getForeignKeys();
+		if(\Session::has('fields.datetime'))
+			\Session::forget('fields.datetime');
+
+		$fieldsDatetime = array();
         foreach($columnsSchema as $column) {
 
         	$canAddColumn = false;
@@ -254,12 +258,16 @@ final class TemplateBuilder{
 		        		else if($type == 'date'){
 		        			$tmp = explode('-',$model->{$column->getName()});
 		        			$value = $tmp[2].'-'.$tmp[1].'-'.$tmp[0];
+		        			// \Session::push('fields.datetime', [ 'name' => $column->getName(), 'type' => $type ]);
+		        			$fieldsDatetime[$column->getName()] = $type;
 		        		}
 		        		else{
 		        			$value = [
 		        				'date' => $model->{$column->getName()}->format('d-m-Y'),
 		        				'time' => $model->{$column->getName()}->toTimeString()
 		        			];
+		        			// \Session::push('fields.datetime', [ 'name' => $column->getName(), 'type' => $type ]);
+		        			$fieldsDatetime[$column->getName()] = $type;
 		        		}
 			    	}
 			    	catch(Exeption $e){
@@ -272,6 +280,12 @@ final class TemplateBuilder{
 	        				'date' => '',
 	        				'time' => ''
 	        			];
+	        			// \Session::push('fields.datetime', [ 'name' => $column->getName(), 'type' => $type ]);
+	        			$fieldsDatetime[$column->getName()] = $type;
+			    	}
+			    	else if( $type == 'date' ){
+			    	// 	\Session::push('fields.datetime', [ 'name' => $column->getName(), 'type' => $type ]);
+			    		$fieldsDatetime[$column->getName()] = $type;
 			    	}
 			    	else{
 			    		$value = '';
@@ -293,6 +307,8 @@ final class TemplateBuilder{
 	            ));
 	        }
         }
+
+        \Session::put('fields.datetime', $fieldsDatetime);
         $columns['hasManyRelation'] = $this->controller->repository->findManyRelations($primary);
         return $columns;
     }

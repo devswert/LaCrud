@@ -133,7 +133,7 @@ abstract class LaCrudBaseController extends BaseController{
 		else{
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) ) .'.create' )
 				->withInput()
-				->with('error_message',$this->manager->getErrors());
+				->withErrors($this->manager->getErrors());
 		}
 	}
 
@@ -151,7 +151,7 @@ abstract class LaCrudBaseController extends BaseController{
 		else{
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.edit', array( 'id' => $id ) )
 				->withInput()
-				->with('error_message',$this->manager->getErrors());
+				->withErrors($this->manager->getErrors());
 		}
 	}
 

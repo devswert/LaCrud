@@ -1,5 +1,7 @@
 <?php namespace DevSwert\LaCrud\Data\Manager;
 
+use Carbon\Carbon;
+
 abstract class LaCrudBaseManager {
 
     private $attributes;
@@ -65,10 +67,6 @@ abstract class LaCrudBaseManager {
         $this->configManyRelations = $relations;
         $this->attributes = \Input::all();
 
-        dd(\Input::all());
-        $carbon = Carbon::createFromFormat('d-m-Y h:i:s','12-10-2015 00:00:00');
-        dd( $carbon->toDateTimeString() );
-
         $this->filterInformation();
         if( $this->isValid() ){
             $this->assignValues( $encryptFields );
@@ -128,20 +126,43 @@ abstract class LaCrudBaseManager {
     }
 
     final private function assignValues($encryptFields, &$entity = null){
-        foreach ($this->attributes as $key => $value){
+        
+        foreach ($this->attributes as $key => &$value){
             if( strlen($key) >= 11 && substr($key, 0, 13) == "manyRelations" ){
                 $tmp = explode("#",$key);
                 $this->manyRelations[$tmp[1]] = $value;
             }
             else{
+                $datetimesFields = \Session::get('fields.datetime', null);
                 if( in_array($key,$encryptFields) )
                     $value = \Hash::make($value);
+                if( is_array($datetimesFields) && array_key_exists($key, $datetimesFields) ){
+                    
+                    if($datetimesFields[$key] == 'date'){
+                        $value = ($value == '') ? date('d-m-Y') : $value;
+                        $baseDate = $value.' '.date('H:i:s');
+                    }
+                    else{
+                        $baseTime = array_key_exists($key.'-time', $this->attributes) ? $this->attributes[$key.'-time'] : date('H:i:s');
+                        
+                        if( array_key_exists($key.'-time', $this->attributes) ) {
+                            unset($this->attributes[$key.'-time']);
+                        }
+
+                        $value = ($value == '') ? date('d-m-Y') : $value;
+                        $baseDate = $value.' '.$baseTime;
+                    }
+
+                    $carbon = Carbon::createFromFormat('d-m-Y H:i:s',$baseDate);
+                    $value = ($datetimesFields[$key] == 'date') ? $carbon->toDateString() : $carbon->toDateTimeString();
+                }
                 if( is_null($entity) )
                     $this->entity->{$key} = $value;
                 else
                     $entity->{$key} = $value;
             }
         }
+
     }
 
     final private function assignRelationsValues(){
