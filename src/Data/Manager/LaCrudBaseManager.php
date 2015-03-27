@@ -37,7 +37,6 @@ abstract class LaCrudBaseManager {
 
             try{
                 $this->assignValues($encryptFields,$register);
-
                 $register->table = $this->entity->table;
                 $register->save();
                 if( count($this->manyRelations) > 0 ){
@@ -134,8 +133,13 @@ abstract class LaCrudBaseManager {
             }
             else{
                 $datetimesFields = \Session::get('fields.datetime', null);
+                $booleansFields = \Session::get('fields.booleans', array());
+
                 if( in_array($key,$encryptFields) )
                     $value = \Hash::make($value);
+                if( in_array($key,$booleansFields) ){
+                    $value = ( $value == 'on' || $value == 1 ) ? true : false;
+                }
                 if( is_array($datetimesFields) && array_key_exists($key, $datetimesFields) ){
                     
                     if($datetimesFields[$key] == 'date'){

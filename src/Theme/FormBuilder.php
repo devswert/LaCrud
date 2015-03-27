@@ -40,7 +40,7 @@ final class FormBuilder{
 								$html .= $this->addDateTime($field);
 								break;
 							case 'boolean':
-								$html .= $this->addRadio($field);
+								$html .= $this->addCheckbox($field);
 								break;
 							case 'enum':
 								$html .= $this->addSelect($field);
@@ -69,12 +69,7 @@ final class FormBuilder{
 			}
 			return $html;
 		}
-		$trace = debug_backtrace();
-		trigger_error(
-            'The fields given is not valid'.
-            ' on ' . $trace[0]['file'] .
-            ' in line ' . $trace[0]['line'],
-            E_USER_NOTICE);
+		$this->throwException('The fields given is not valid');
         return null;
 	}
 
@@ -101,6 +96,10 @@ final class FormBuilder{
 
 	private function addSelect($field){
 		return \View::make($this->base_theme.'.select', compact('field'))->render();
+	}
+
+	private function addCheckbox($field){
+		return \View::make($this->base_theme.'.checkbox', compact('field'))->render();
 	}
 
 	private function addSelectForeignKey($field){

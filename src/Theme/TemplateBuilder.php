@@ -222,7 +222,11 @@ final class TemplateBuilder{
 		if(\Session::has('fields.datetime'))
 			\Session::forget('fields.datetime');
 
+		if(\Session::has('fields.booleans'))
+			\Session::forget('fields.booleans');
+
 		$fieldsDatetime = array();
+		$fieldsBooleans = array();
         foreach($columnsSchema as $column) {
 
         	$canAddColumn = false;
@@ -257,6 +261,9 @@ final class TemplateBuilder{
 		        	try{
 		        		if( !in_array($type, ['datetime','date','timestamp']) ){
 			    			$value = $model->{$column->getName()};
+			    			if( $type == 'boolean' ){
+					    		array_push($fieldsBooleans, $column->getName());
+					    	}
 		        		}
 		        		else if($type == 'date'){
 		        			$tmp = explode('-',$model->{$column->getName()});
@@ -285,6 +292,11 @@ final class TemplateBuilder{
 			    	}
 			    	else if( $type == 'date' ){
 			    		$fieldsDatetime[$column->getName()] = $type;
+			    		$value = '';
+			    	}
+			    	else if( $type == 'boolean' ){
+			    		array_push($fieldsBooleans, $column->getName());
+			    		$value = '';
 			    	}
 			    	else{
 			    		$value = '';
@@ -309,6 +321,7 @@ final class TemplateBuilder{
         }
 
         \Session::put('fields.datetime', $fieldsDatetime);
+        \Session::put('fields.booleans', $fieldsBooleans);
         $columns['hasManyRelation'] = $this->controller->repository->findManyRelations($primary);
         return $columns;
     }
@@ -316,10 +329,29 @@ final class TemplateBuilder{
     private function resolveRoutesPublish(){
     	$response = array();
     	foreach ($this->controller->repository->routes() as $route => $controller){
-    		array_push($response,array(
-    			'table' => str_replace("_", "-",(is_numeric($route)) ? $controller : $route),
-    			'name'  => ucfirst( str_replace("_", " ", (is_numeric($route)) ? $controller : $route) )
-    		));
+    		if( !is_array($controller) ){
+	    		$table = str_replace("_", "-",(is_numeric($route)) ? $controller : $route);
+	    		$name  = ucfirst( str_replace("_", " ", (is_numeric($route)) ? $controller : $route) );
+	    		$canAdd = true;
+	    	}
+	    	else{
+	    		$canAdd = ( array_key_exists('showInMenu', $controller) ) ? $controller['showInMenu'] : true;
+	    		if( array_key_exists('controller', $controller) ){
+	    			$table = str_replace("_", "-",(is_numeric($route)) ? $controller['controller'] : $route);
+	    			$name  = ucfirst( str_replace("_", " ", (is_numeric($route)) ? $controller['controller'] : $route) );
+	    		}
+	    		else{
+	    			$table = str_replace("_", "-",(is_numeric($route)) ? $controller : $route);
+	    			$name  = ucfirst( str_replace("_", " ", (is_numeric($route)) ? $controller : $route) );
+	    		}
+	    	}
+
+	    	if($canAdd){
+		    	array_push($response,array(
+					'table' => $table,
+					'name'  => $name
+				));
+		    }
     	}
     	return $response;
     }

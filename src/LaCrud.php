@@ -7,7 +7,8 @@
 	use Illuminate\Support\Facades\Route;
 
 	class LaCrud{
-	 
+	 	use Utils;
+
 		private $prefix;
 		private $appName;
 
@@ -28,8 +29,12 @@
 				$config = new Configuration();
 				$config->title(ucfirst(((is_numeric($route)) ? $controller : $route)));
 
+				if( is_array($controller)){
+					$controller = (array_key_exists('controller', $controller)) ? $controller['controller'] : null;
+				}
+
 				$controllerFinalName = $this->appName.'\\Http\\Controllers\\'.$controller;
-    			$functional = (!is_numeric($route)) ? new $controllerFinalName($repository,$manager,$config) : new LaCrudController($repository,$manager,$config);
+    			$functional = (!is_numeric($route) && !is_null($controller) ) ? new $controllerFinalName($repository,$manager,$config) : new LaCrudController($repository,$manager,$config);
 
 				Route::get($final, array('as' => 'lacrud.'.$table.'.index',function() use($functional){
 	    			return $functional->index();
