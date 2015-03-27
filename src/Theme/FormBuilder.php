@@ -54,6 +54,12 @@ final class FormBuilder{
 							case 'simpletext':
 								$html .= $this->addTextarea($field);
 								break;
+							case 'image':
+								$html .= $this->addImage($field);
+								break;
+							case 'upload':
+								$html .= $this->addUpload($field);
+								break;
 							default:
 								$html .= $this->addInput($field);
 								break;
@@ -111,6 +117,14 @@ final class FormBuilder{
 
 	private function addTextarea($field){
 		return \View::make($this->base_theme.'.textarea', compact('field'))->render();
+	}
+
+	private function addImage($field){
+		return \View::make($this->base_theme.'.upload', compact('field'))->render();	
+	}
+
+	private function addUpload($field){
+		return \View::make($this->base_theme.'.upload', compact('field'))->render();	
 	}
 
 }

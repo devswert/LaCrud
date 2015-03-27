@@ -17,7 +17,7 @@
                     <div class="box-header">
                         <h3 class="box-title">{{ trans('lacrud::templates.title_edit') }}</h3>
                     </div>
-                    <form action="{{ URL::route('lacrud.'.$entity.'.update', array('id' => $pk) ) }}" method="post">
+                    <form action="{{ URL::route('lacrud.'.$entity.'.update', array('id' => $pk) ) }}" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="_method" value="PUT">
                         <div class="box-body">

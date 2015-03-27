@@ -17,7 +17,7 @@
                     <div class="box-header">
                         <h3 class="box-title">{{ trans('lacrud::templates.title_create') }}</h3>
                     </div>
-                    <form action="{{ URL::route('lacrud.'.$entity.'.store') }}" method="post">
+                    <form action="{{ URL::route('lacrud.'.$entity.'.store') }}" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="box-body">
                             {!! $form !!}
