@@ -13,6 +13,8 @@ abstract class LaCrudBaseManager {
     protected $entity;
     protected $errors;
     public $rules = array();
+    public $rulesCreate = array();
+    public $rulesEdit = array();
     public $fieldsNotEdit = array();
     public $disabledTextEditor = array();
 
@@ -327,9 +329,24 @@ abstract class LaCrudBaseManager {
     }
 
     final private function isValid(){
+        $callers = debug_backtrace();
+        $parentFunction = $callers[1]['function'];
+
+        switch ($parentFunction) {
+            case 'save':
+                $rules = (is_array($this->rulesCreate) && count($this->rulesCreate) > 0 ) ? $this->rulesCreate : $this->rules;
+                break;
+            case 'update':
+                $rules = (is_array($this->rulesEdit) && count($this->rulesEdit) > 0 ) ? $this->rulesCreate : $this->rules;
+                break;
+            default:
+                $rules = $this->rules;
+                break;
+        }
+
         $validator = \Validator::make(
             $this->attributes,
-            $this->rules
+            $rules
         );
         if($validator->fails()){
             $this->errors = $validator->messages();

@@ -10,7 +10,7 @@ abstract class LaCrudBaseRepository {
     public $entity;
     public $fieldsNotSee = array();
     public $displayAs = array();
-    public $isPassword = array();
+    public $isEncrypted = array();
     public $requiredFields = array();
     public $unsetTextEditor = array();
     public $nameDisplayForeignsKeys = array();

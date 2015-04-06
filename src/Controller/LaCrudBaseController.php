@@ -15,6 +15,7 @@ abstract class LaCrudBaseController extends BaseController{
 	private $templateBuilder;
 	private $showCreatedAt = false;
 	private $showUpdatedAt = false;
+	private $showDeletedAt = false;
 
 	//Permisos del CRUD
 	private $canEdit = true;
@@ -25,13 +26,33 @@ abstract class LaCrudBaseController extends BaseController{
 	private $canRead = true;
 
 	//Funciones basicas de Crud
-	abstract public function index();
-	abstract public function create();
-	abstract public function store();
-	abstract public function show($id);
-	abstract public function edit($id);
-	abstract public function update($id);
-	abstract public function destroy($id);
+	public function index(){
+		return $this->render();
+	}
+
+	public function create(){
+		return $this->baseCreate();
+	}
+
+	public function store(){
+		return $this->baseStore();
+	}
+
+	public function show($id){
+		return $this->baseShow($id);
+	}
+
+	public function edit($id){
+		return $this->baseEdit($id);
+	}
+
+	public function update($id){
+		return $this->baseUpdate($id);
+	}
+
+	public function destroy($id){
+		return $this->baseDestroy($id);
+	}
 
 	//Seteadores de "can"
 	final public function unsetEdit(){
@@ -98,12 +119,21 @@ abstract class LaCrudBaseController extends BaseController{
 		return $this;
 	}
 
+	final public function showDeletedAt(){
+		$this->showDeletedAt = true;
+		return $this;
+	}
+
 	final public function getCreatedAt(){
 		return $this->showCreatedAt;
 	}
 
 	final public function getUpdatedAt(){
 		return $this->showUpdatedAt;
+	}
+
+	final public function getDeletedAt(){
+		return $this->showDeletedAt;
 	}
 
 	//Minimo funcionamiento del Crud
@@ -126,7 +156,7 @@ abstract class LaCrudBaseController extends BaseController{
 			return $this->notAccess($message);
 		}
 
-		if( $this->manager->save($this->repository->isPassword,$this->repository->manyRelations,$this->repository->uploads) ){
+		if( $this->manager->save($this->repository->isEncrypted,$this->repository->manyRelations,$this->repository->uploads) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) ) .'.index' )
 				->with('success_message',trans('lacrud::notifications.success_add'));
 		}
@@ -144,7 +174,7 @@ abstract class LaCrudBaseController extends BaseController{
 		}
 
 		$pk = $this->repository->getPrimaryKey();
-		if( $this->manager->update($pk,$id,$this->repository->isPassword,$this->repository->manyRelations,$this->repository->uploads) ){
+		if( $this->manager->update($pk,$id,$this->repository->isEncrypted,$this->repository->manyRelations,$this->repository->uploads) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.index' )
 				->with('success_message',trans('lacrud::notifications.success_edit'));
 		}

@@ -31,7 +31,7 @@ final class FormBuilder{
 					else if( is_array($field) ){
 						switch ($field['type']){
 							case 'string':
-								$html .= ( $field['isPassword'] ) ? $this->addPassword($field) : $this->addInput($field);
+								$html .= ( $field['isEncrypted'] ) ? $this->addPassword($field) : $this->addInput($field);
 								break;
 							case 'date':
 								$html .= $this->addSimpleDate($field);

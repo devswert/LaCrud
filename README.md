@@ -1,2 +1,3 @@
-# LaCrud
-CRUD helper for Laravel
+## LaCrud
+
+Documentation in development :)

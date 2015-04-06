@@ -236,10 +236,13 @@ final class TemplateBuilder{
 	        else if( $column->getName() == 'updated_at' && $this->controller->getUpdatedAt() ){
         		$canAddColumn = true;
 	        }
+	        else if( $column->getName() == 'deleted_at' && $this->controller->getDeletedAt() ){
+        		$canAddColumn = true;
+	        }
 	        else if( in_array($column->getName() , $this->controller->manager->fieldsNotEdit ) ){
 	        	$canAddColumn = false;
 	        }
-	        else if( $column->getName() != 'created_at' && $column->getName() != 'updated_at' ){
+	        else if( $column->getName() != 'created_at' && $column->getName() != 'updated_at' && $column->getName() != 'deleted_at' ){
 	        	$canAddColumn = true;
 	        }
 
@@ -315,7 +318,7 @@ final class TemplateBuilder{
 	            	'isAutoincrement' => $column->getAutoincrement(),
 	            	'value' => $value,
 	            	'paths' => $this->getPathsIfHave($column),
-	            	'isPassword' => ( in_array($column->getName(), $this->controller->repository->isPassword) ) ? true : false,
+	            	'isEncrypted' => ( in_array($column->getName(), $this->controller->repository->isEncrypted) ) ? true : false,
 	            	'hasForeignKeys' => $this->controller->repository->findIsForeignKey($column,$foreignKeys)
 	            ));
 	        }

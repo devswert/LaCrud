@@ -5,14 +5,31 @@
 	use DevSwert\LaCrud\Data\Repository\LaCrudRepository;
 	use DevSwert\LaCrud\Data\Entity\LaCrudBaseEntity;
 	use Illuminate\Support\Facades\Route;
+	use Illuminate\Console\AppNamespaceDetectorTrait;
 
 	class LaCrud{
 	 	use Utils;
+	 	use AppNamespaceDetectorTrait;
 
 		private $prefix;
-		private $appName;
+		private $theme = 'Default';
+
+		public function getNamespace(){
+	        return $this->getAppNamespace();
+	    }
+
+	    public function theme($name = null){
+	    	$this->theme = ( !is_null($name) ) ? $name : $this->theme;
+	    	return $this;
+	    }
+
+	    public function prefix($prefix){
+	    	$this->prefix = $prefix;
+	    	return $this;
+	    }
 
 	    public function RegisterCrud($routes){
+
 	    	foreach ($routes as $route => $controller){
 	    		$table = str_replace("_", "-",(is_numeric($route)) ? $controller : $route);
 	    		$final = str_replace("_", "-",  (isset($this->prefix)) ? $this->prefix.'/'.$table : $table);
@@ -28,12 +45,13 @@
 
 				$config = new Configuration();
 				$config->title(ucfirst(((is_numeric($route)) ? $controller : $route)));
+				$config->theme($this->theme);
 
 				if( is_array($controller)){
 					$controller = (array_key_exists('controller', $controller)) ? $controller['controller'] : null;
 				}
 
-				$controllerFinalName = $this->appName.'\\Http\\Controllers\\'.$controller;
+				$controllerFinalName = $this->getNamespace().'Http\\Controllers\\'.$controller;
     			$functional = (!is_numeric($route) && !is_null($controller) ) ? new $controllerFinalName($repository,$manager,$config) : new LaCrudController($repository,$manager,$config);
 
 				Route::get($final, array('as' => 'lacrud.'.$table.'.index',function() use($functional){
@@ -64,16 +82,6 @@
 		    		return $functional->destroy($id);
 	    		}));
 			}
-	    	return $this;
-	    }
-
-	    public function prefix($prefix){
-	    	$this->prefix = $prefix;
-	    	return $this;
-	    }
-
-	    public function appName($name){
-	    	$this->appName = $name;
 	    	return $this;
 	    }
 	 
