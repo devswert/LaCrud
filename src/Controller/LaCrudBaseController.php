@@ -126,7 +126,7 @@ abstract class LaCrudBaseController extends BaseController{
 			return $this->notAccess($message);
 		}
 
-		if( $this->manager->save($this->repository->isPassword,$this->repository->manyRelations) ){
+		if( $this->manager->save($this->repository->isPassword,$this->repository->manyRelations,$this->repository->uploads) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) ) .'.index' )
 				->with('success_message',trans('lacrud::notifications.success_add'));
 		}
@@ -144,7 +144,7 @@ abstract class LaCrudBaseController extends BaseController{
 		}
 
 		$pk = $this->repository->getPrimaryKey();
-		if( $this->manager->update($pk,$id,$this->repository->isPassword,$this->repository->manyRelations) ){
+		if( $this->manager->update($pk,$id,$this->repository->isPassword,$this->repository->manyRelations,$this->repository->uploads) ){
 			return \Redirect::route( 'lacrud.'. \Request::segment(count(explode('/', \Request::path())) - 1 ) .'.index' )
 				->with('success_message',trans('lacrud::notifications.success_edit'));
 		}

@@ -119,7 +119,7 @@ final class FormBuilder{
 	}
 
 	private function addImage($field){
-		return \View::make($this->base_theme.'.upload', compact('field'))->render();	
+		return \View::make($this->base_theme.'.image', compact('field'))->render();	
 	}
 
 	private function addUpload($field){

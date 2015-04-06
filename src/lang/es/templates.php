@@ -3,8 +3,8 @@
 return [
 
 	//Many Relations
-	'mr_selections_title' => 'Opciones seleccionadas',
-	'mr_options_title'     => 'Opciones',
+	'mr_selections_title' => 'Opciones',
+	'mr_options_title'     => 'Opciones seleccionadas',
 
 	//Buttons
 	'new_register' => 'Crear',

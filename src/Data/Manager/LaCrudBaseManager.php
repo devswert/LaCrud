@@ -1,12 +1,15 @@
 <?php namespace DevSwert\LaCrud\Data\Manager;
 
 use Carbon\Carbon;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Exception\NotReadableException;
 
 abstract class LaCrudBaseManager {
 
     private $attributes;
     private $manyRelations = array();
     private $configManyRelations = array();
+    private $uploadFields = array();
     protected $entity;
     protected $errors;
     public $rules = array();
@@ -28,9 +31,11 @@ abstract class LaCrudBaseManager {
     abstract public function skipUpdate();
     abstract public function skipUpload();
 
-    final public function update($pk,$value,$encryptFields,$relations){
+    final public function update($pk,$value,$encryptFields,$relations,$uploads){
         $this->configManyRelations = $relations;
         $this->attributes = \Input::all();
+        $this->uploadFields = $uploads;
+
         $this->filterInformation();
         if( $this->isValid() ){
             $register = $this->entity->where($pk,'=',$value)->first();
@@ -62,9 +67,10 @@ abstract class LaCrudBaseManager {
         return false;
     }
 
-    final public function save($encryptFields,$relations){
+    final public function save($encryptFields,$relations,$uploads){
         $this->configManyRelations = $relations;
         $this->attributes = \Input::all();
+        $this->uploadFields = $uploads;
 
         $this->filterInformation();
         if( $this->isValid() ){
@@ -114,9 +120,123 @@ abstract class LaCrudBaseManager {
         }
     }
 
-    final public function upload(){}
+    final public function upload($key){
+        //Working with Images files
+        if( is_array($this->uploadFields[$key]) && array_key_exists('isImage', $this->uploadFields[$key]) && $this->uploadFields[$key]['isImage'] ){
+            try {
+                //Moving the image files to storage config in the app
+                $localStorage = \Config::get('filesystems');
+                $tmpRoute = $localStorage['disks']['local']['root'].'/LaCrud/';
+                $tmpFileName = str_random(10).'-'.$this->attributes[$key]->getClientOriginalName();
+                $tmpImage = $this->attributes[$key]->move($tmpRoute,$tmpFileName);
+
+                //Creating the object image
+                $imageManager = new ImageManager(array('driver' => 'imagick'));
+                $image = $imageManager->make( $tmpImage );
+
+                //Rsolve the permission path on app and sizes
+                if( array_key_exists('public',$this->uploadFields[$key]) || array_key_exists('private',$this->uploadFields[$key]) ){
+                    if( array_key_exists('public',$this->uploadFields[$key]) ){
+                        $tmpFileName = $this->moveUploadFile($key,'public',$image);
+                    }
+                    if( array_key_exists('private',$this->uploadFields[$key]) ){
+                        $tmpFileName = $this->moveUploadFile($key,'private',$image);
+                    }
+                }
+                else{
+                    \Storage::disk('local')->delete( 'LaCrud/'.$tmpFileName );
+                    throw new \Exception("The field's configuration not has a public or private path to move the file");
+                }
+
+            } catch (NotReadableException $e) {
+                \Storage::disk('local')->delete( 'LaCrud/'.$tmpFileName );
+                throw new NotReadableException($e->getMessage());
+            }
+        }
+        //Working with others files
+        else{
+            if( is_array($this->uploadFields[$key]) ){
+                if( array_key_exists('public',$this->uploadFields[$key]) || array_key_exists('private',$this->uploadFields[$key]) ){
+                    if( array_key_exists('public',$this->uploadFields[$key]) ){
+                        $tmpFileName = $this->moveUploadFile($key,'public');
+                    }
+                    if( array_key_exists('private',$this->uploadFields[$key]) ){
+                        $tmpFileName = $this->moveUploadFile($key,'private');
+                    }
+                }
+                else{
+                    throw new \Exception("The field's configuration not has a public or private path to move the file");
+                }
+            }
+            else{
+                $tmpRoute = public_path().'/'.$this->uploadFields[$key];
+                $tmpFileName = str_random(10).'-'.$this->attributes[$key]->getClientOriginalName();
+                $this->attributes[$key]->move($tmpRoute,$tmpFileName);
+            }
+        }
+        return $tmpFileName;
+    }
 
     //Functionals methods
+    final private function moveUploadFile($key,$type,$image = null){
+        if( is_array($this->uploadFields[$key][$type]) ){
+            if( array_key_exists('path', $this->uploadFields[$key][$type]) ){
+                $base_path = ( $type == 'public' ) ? public_path() : base_path();
+                $tmpRoute = $base_path.'/'.$this->uploadFields[$key][$type]['path'];
+
+                if( get_class($image) == 'Intervention\Image\Image' ){
+                    $tmpFileName = $image->basename;//substr($image->basename, 21);
+                    
+                    if( array_key_exists('resizes', $this->uploadFields[$key][$type]) && is_array($this->uploadFields[$key][$type]['resizes']) ){
+                        foreach ($this->uploadFields[$key][$type]['resizes'] as $prefix => $dimension){
+                            $backupImageOcject = clone $image;
+                            $finalDimensions = [];
+                            $nameOptionsCrop = ['ImageCropWidth','ImageCropHeight','ImageCropX','ImageCropY'];
+                            for ($i=0; $i < 4; $i++) { 
+                                if( array_key_exists($i, $dimension) ){
+                                    if(is_numeric($dimension[$i])){
+                                        $finalDimensions[$nameOptionsCrop[$i]] = $dimension[$i];
+                                    }
+                                    else{
+                                        throw new \Exception("The dimensions for resize the field ".$key." aren't valid");
+                                    }
+                                }
+                                else{
+                                    $finalDimensions[$nameOptionsCrop[$i]] = null;
+                                }
+                            }
+                            extract($finalDimensions);
+                            $backupImageOcject->crop($ImageCropWidth,$ImageCropHeight,$ImageCropX,$ImageCropY)->save($tmpRoute.'/'.$prefix.$tmpFileName);
+                        }
+                    }
+
+                    $image->save($tmpRoute.'/'.$tmpFileName);
+                }
+                else{
+                    $tmpFileName = str_random(10).'-'.$this->attributes[$key]->getClientOriginalName();
+                    $this->attributes[$key]->move($tmpRoute,$tmpFileName);
+                }
+            }
+            else{
+                throw new \Exception("The field's configuration not has path to move the file");
+            }
+        }
+        else{
+            $base_path = ( $type == 'public' ) ? public_path() : base_path();
+            $tmpRoute = $base_path.'/'.$this->uploadFields[$key][$type];
+        
+            if( get_class($image) == 'Intervention\Image\Image' ){
+                $tmpFileName = str_random(10).'-'.substr($image->basename, 21);
+                $image->save($tmpRoute.'/'.$tmpFileName);
+            }
+            else{
+                $tmpFileName = str_random(10).'-'.$this->attributes[$key]->getClientOriginalName();
+                $this->attributes[$key]->move($tmpRoute,$tmpFileName);
+            }
+        }
+        return $tmpFileName;
+    }
+
     final private function forceDelete($pk,$value){
         //Verificar si tiene fake relations
         //Verificar si hay relaciones reales
@@ -160,13 +280,17 @@ abstract class LaCrudBaseManager {
                     $carbon = Carbon::createFromFormat('d-m-Y H:i:s',$baseDate);
                     $value = ($datetimesFields[$key] == 'date') ? $carbon->toDateString() : $carbon->toDateTimeString();
                 }
+
+                if( array_key_exists($key, $this->uploadFields) ){
+                    $value = $this->upload($key);
+                }
+
                 if( is_null($entity) )
                     $this->entity->{$key} = $value;
                 else
                     $entity->{$key} = $value;
             }
         }
-
     }
 
     final private function assignRelationsValues(){

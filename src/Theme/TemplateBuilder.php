@@ -251,9 +251,6 @@ final class TemplateBuilder{
 				}
 				if( $type == 'string' ){
 					$type = ( array_key_exists($column->getName() , $this->controller->repository->uploads ) ) ? 'upload' : 'string' ;
-					if( array_key_exists('set_images', $this->controller->repository->uploads) && is_array($this->controller->repository->uploads['set_images']) ){
-						$type = ( array_key_exists( $column->getName() , $this->controller->repository->uploads['set_images']) ) ? 'image' : $type;
-					}
 				}
 
 	        	$nameColumn = (array_key_exists($column->getName(), $this->controller->repository->displayAs)) ? $this->controller->repository->displayAs[$column->getName()] : $column->getName();
@@ -276,6 +273,10 @@ final class TemplateBuilder{
 		        				'time' => $model->{$column->getName()}->toTimeString()
 		        			];
 		        			$fieldsDatetime[$column->getName()] = $type;
+		        		}
+
+		        		if( array_key_exists($column->getName(), $this->controller->repository->uploads) && array_key_exists('isImage', $this->controller->repository->uploads[$column->getName()])  && $this->controller->repository->uploads[$column->getName()]['isImage'] ){
+		        			$type = 'image';
 		        		}
 			    	}
 			    	catch(Exeption $e){
@@ -369,38 +370,20 @@ final class TemplateBuilder{
 
     private function getPathsIfHave($column){
     	$paths = null;
-    	if( array_key_exists('set_images', $this->controller->repository->uploads) && is_array($this->controller->repository->uploads['set_images']) ){
-	    	if( array_key_exists($column->getName() , $this->controller->repository->uploads['set_images'] ) ){
-	    		if( is_array( $this->controller->repository->uploads['set_images'][$column->getName()] ) ){
-		    		$paths = [
-		    			'public'  => ( array_key_exists('public' , $this->controller->repository->uploads['set_images'][$column->getName()]) ) ? $this->controller->repository->uploads['set_images'][$column->getName()]['public'] : '',
-		    			'private' => ( array_key_exists('private', $this->controller->repository->uploads['set_images'][$column->getName()]) ) ? $this->controller->repository->uploads['set_images'][$column->getName()]['private'] : ''
-		    		];
-		    	}
-		    	else{
-		    		$paths = [
-		    			'public'  => $this->controller->repository->uploads['set_images'][$column->getName()],
-		    			'private' => ''
-		    		];
-		    	}
+	    if( array_key_exists($column->getName() , $this->controller->repository->uploads ) ){
+	    	if( is_array( $this->controller->repository->uploads[$column->getName()] ) ){
+	    		$paths = [
+	    			'public'  => ( array_key_exists('public' , $this->controller->repository->uploads[$column->getName()]) ) ? $this->controller->repository->uploads[$column->getName()]['public'] : '',
+	    			'private' => ( array_key_exists('private', $this->controller->repository->uploads[$column->getName()]) ) ? $this->controller->repository->uploads[$column->getName()]['private'] : ''
+	    		];
+	    	}
+	    	else{
+	    		$paths = [
+	    			'public'  => $this->controller->repository->uploads[$column->getName()],
+	    			'private' => ''
+	    		];
 	    	}
 	    }
-	    if(is_null($paths)){
-		    if( array_key_exists($column->getName() , $this->controller->repository->uploads ) ){
-		    	if( is_array( $this->controller->repository->uploads[$column->getName()] ) ){
-		    		$paths = [
-		    			'public'  => ( array_key_exists('public' , $this->controller->repository->uploads[$column->getName()]) ) ? $this->controller->repository->uploads[$column->getName()]['public'] : '',
-		    			'private' => ( array_key_exists('private', $this->controller->repository->uploads[$column->getName()]) ) ? $this->controller->repository->uploads[$column->getName()]['private'] : ''
-		    		];
-		    	}
-		    	else{
-		    		$paths = [
-		    			'public'  => $this->controller->repository->uploads[$column->getName()],
-		    			'private' => ''
-		    		];
-		    	}
-		    }
-		}
 		return $paths;
     }
 }
