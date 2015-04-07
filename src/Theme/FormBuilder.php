@@ -5,8 +5,21 @@ use DevSwert\LaCrud\Utils;
 final class FormBuilder{
 	use Utils;
 
+	/**
+	 * Base path for load templates.
+	 *
+	 * @var string
+	 */
 	private $base_theme;
 
+	/**
+	 * Init the instance creting or defining the base_theme 
+	 * for the class.
+	 *
+	 * @param $base_theme  string    
+	 * @param $theme       string
+	 * @return void
+	 */
 	public function __construct($base_theme,$theme){
 		$base_theme = $base_theme.'/forms';
 
@@ -16,7 +29,12 @@ final class FormBuilder{
 		$this->base_theme = 'lacrud::'.$theme.'.forms.';
 	}
 
-	//Metodo publico para su funcion
+	/**
+	 * Generate the HTML form according to $fields
+	 *
+	 * @param $fields    array() 
+	 * @return $html string / void on Exception
+	 */
 	public function generateFormAddOrEdit($fields){
 		if(is_array($fields) && count($fields) > 0){
 			$html = '';
@@ -70,58 +88,134 @@ final class FormBuilder{
 			return $html;
 		}
 		$this->throwException('The fields given is not valid');
-        return null;
 	}
 
-	//Metodos privados para la generacion de los campos
+	/**
+	 * Generate the HTML for Basic ipnut
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addInput($field){
 		return \View::make($this->base_theme.'.input', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for password/encrypted ipnut
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addPassword($field){
 		return \View::make($this->base_theme.'.password', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for numeric ipnut
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addInteger($field){
 		return \View::make($this->base_theme.'.integer', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for DateTime ipnut
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addDateTime($field){
 		return \View::make($this->base_theme.'.datetime', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for Only date ipnut
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addSimpleDate($field){
 		return \View::make($this->base_theme.'.date', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for select/combobox
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addSelect($field){
 		return \View::make($this->base_theme.'.select', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for checkbox input / Boolean type
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addCheckbox($field){
 		return \View::make($this->base_theme.'.checkbox', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for select with foereign data loaded
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addSelectForeignKey($field){
 		return \View::make($this->base_theme.'.select-foreign', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for MultiSelect
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addMultiSelectManyRelation($relations){
 		return \View::make($this->base_theme.'.multiple-select', compact('relations'))->render();
 	}
 
+	/**
+	 * Generate the HTML for Texteditor
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addTextEditor($field){
 		return \View::make($this->base_theme.'.textedit', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for basic textarea
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addTextarea($field){
 		return \View::make($this->base_theme.'.textarea', compact('field'))->render();
 	}
 
+	/**
+	 * Generate the HTML for input file or image view
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addImage($field){
 		return \View::make($this->base_theme.'.image', compact('field'))->render();	
 	}
 
+	/**
+	 * Generate the HTML for input file or link ti resource
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
 	private function addUpload($field){
 		return \View::make($this->base_theme.'.upload', compact('field'))->render();	
 	}

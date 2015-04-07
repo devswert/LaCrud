@@ -6,7 +6,7 @@ use Doctrine\DBAL\Types\Type;
 class LaCrudServiceProvider extends ServiceProvider {
 
 	/**
-	 * Bootstrap the application services.
+	 * Bootstrap the application services and set the content to publish.
 	 *
 	 * @return void
 	 */

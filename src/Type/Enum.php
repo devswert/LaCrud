@@ -4,7 +4,8 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
- * My custom datatype.
+ * Custom Filed type Enum for Doctrine
+ *
  */
 class Enum extends Type{
     const ENUM = 'enum';

@@ -11,29 +11,63 @@
 	 	use Utils;
 	 	use AppNamespaceDetectorTrait;
 
+	 	/**
+	 	 * A prefix for the all routes.
+	 	 *
+	 	 * @var string
+	 	 */
 		private $prefix;
+
+		/**
+		 * Name of theme to use.
+		 *
+		 * @var string
+		 */
 		private $theme = 'Default';
 
+		/**
+		 * Returns the namespace of Application.
+		 *
+		 * @return string 
+		 */
 		public function getNamespace(){
 	        return $this->getAppNamespace();
 	    }
 
+	    /**
+		 * If is set the param, set the theme of LaCrud, else
+		 * return the name of theme.
+		 *
+		 * @param $name string / null
+		 * @return string / void
+		 */
 	    public function theme($name = null){
 	    	$this->theme = ( !is_null($name) ) ? $name : $this->theme;
 	    	return $this;
 	    }
 
+	    /**
+		 * Set the prefix for all routes.
+		 *
+		 * @param $prefix string
+		 * @return this 
+		 */
 	    public function prefix($prefix){
 	    	$this->prefix = $prefix;
 	    	return $this;
 	    }
 
+	    /**
+		 * Principal function, this method create all routes
+		 * added in the array declaration on routes.php
+		 *
+		 * @param $routes array
+		 * @return this 
+		 */
 	    public function RegisterCrud($routes){
-
 	    	foreach ($routes as $route => $controller){
 	    		$table = str_replace("_", "-",(is_numeric($route)) ? $controller : $route);
 	    		$final = str_replace("_", "-",  (isset($this->prefix)) ? $this->prefix.'/'.$table : $table);
-	    		//$final = (isset($this->prefix)) ? $this->prefix.'/'.$table : $table;
 
 	    		$entity = new LaCrudBaseEntity();
 				$entity->table = ((is_numeric($route)) ? $controller : $route);
