@@ -7,15 +7,63 @@ use Carbon\Carbon;
 final class TemplateBuilder{
 	use Utils;
 
+	/**
+	 * An instance of LaCrudController
+	 *
+	 * @var string
+	 */
 	private $controller;
+
+	/**
+	 * A string that contains the base path of theme.
+	 *
+	 * @var string
+	 */
 	private $base_theme;
+
+	/**
+	 * An instance of FormBuilder
+	 *
+	 * @var string
+	 */
 	private $formBuilder;
 
+	/**
+	 * Has a template route of header template.
+	 *
+	 * @var string
+	 */
 	private $templateHeader;
+
+	/**
+	 * Has a template route of footer template.
+	 *
+	 * @var string
+	 */
 	private $templateFooter;
+
+	/**
+	 * Has a template route of forbidden access template.
+	 *
+	 * @var string
+	 */
 	private $templateForbidden;
+
+	/**
+	 * Has a template route of layout's theme.
+	 *
+	 * @var string
+	 */
 	private $templateLayout;
 
+	/**
+	 * In the moment of instance the class create the $formbuiler class and 
+	 * define the templetes for use in the header, footer, layout and
+	 * forbidden access. Too define the base_path of theme. 
+	 *
+	 * @param $controller   LaCrudBaseController
+	 * @return void
+	 */
 	public function __construct(LaCrudBaseController $controller){
 		$this->controller = $controller;
 		$this->formBuilder = new FormBuilder($this->resolveFolderTheme(),$this->controller->configuration->theme());
@@ -37,6 +85,13 @@ final class TemplateBuilder{
 		$this->templateLayout    = ( file_exists($layoutPath) ? 'layout' : $this->base_theme.'layout' );
 	}
 
+	/**
+	 * Render the view Forbidden access in the 
+	 * any CRUD operation.
+	 *
+	 * @param $message  Message for render in the view
+	 * @return string View render
+	 */
 	public function deniedForAccess($message){
 		return view($this->templateForbidden,array(
 			'header' => $this->getHeaderTheme(true,1),
@@ -46,6 +101,14 @@ final class TemplateBuilder{
 		));
 	}
 	
+	/**
+	 * This method is a dispatcher for the type template
+	 * for render.
+	 *
+	 * @param $parentFunction  The name of function that call in the controller
+	 * @param $id  The value in the case of edit, delete or show a register.
+	 * @return string View render
+	 */
 	public function render($parentFunction,$id){
 		$view = $this->resolveTemplateName($parentFunction);
 
@@ -74,12 +137,23 @@ final class TemplateBuilder{
 		}
 	}
 
+	/**
+	 * Returns the render view of Hard delete confirmed.
+	 *
+	 * @return string The render view
+	 */
 	public function confirmHardDelete(){
 		$entity = \Request::segment(count(explode('/', \Request::path()) ) -1 );
 		$id = \Request::segment(count(explode('/', \Request::path()) ) );
 		return view($this->base_theme.'.forms.hardDelete',array('entity' => $entity,'id' => $id));
 	}
 
+	/**
+	 * Returns the list template with all data necessary
+	 * for display in this request.
+	 *
+	 * @return string Render view
+	 */
 	private function renderList(){
 		$columns = $this->controller->repository->getColumns();
 		$keys = $this->controller->repository->getHeaders($columns);
@@ -98,6 +172,12 @@ final class TemplateBuilder{
 		));
 	}
 
+	/**
+	 * Returns the create template with all inputs
+	 * for create a new register in the system.
+	 *
+	 * @return string  Render view
+	 */
 	private function renderCreate(){
 		$columnsSchema = $this->controller->repository->getColumns();
 		$columns = $this->clearColumns($columnsSchema);
@@ -113,6 +193,12 @@ final class TemplateBuilder{
 		));
 	}
 
+	/**
+	 * Returns the show template with all information of a register.
+	 *
+	 * @param $value    The primary key value to display.
+	 * @return string   The current value of the $str property
+	 */
 	private function showRegister($value){
 		$columnsSchema = $this->controller->repository->getColumns();
 		$primaryKey = $this->controller->repository->getPrimaryKey();
@@ -143,6 +229,13 @@ final class TemplateBuilder{
 		));
 	}
 
+	/**
+	 * Returns the edit template with all information of
+	 * a register for edit the data.
+	 *
+	 * @param $primary  The primary key value to display.
+	 * @return string   The current value of the $str property
+	 */
 	private function showRegisterForEdit($primary){
 		$primaryKey = $this->controller->repository->getPrimaryKey();
 		$information = $this->controller->repository->find($primaryKey,$primary);
@@ -167,7 +260,13 @@ final class TemplateBuilder{
 		));
 	}
 
-	//Utils
+	/**
+	 * Returns name of template according to th method that
+	 * call the function render.
+	 *
+	 * @param $functionName    The base name of function
+	 * @return string          The name of function that call this method
+	 */
     private function resolveTemplateName($functionName){
     	$base = strtolower(substr($functionName, 0,4));
     	if($base == 'base'){
@@ -177,11 +276,23 @@ final class TemplateBuilder{
     	return strtolower($functionName);
     }
 
+    /**
+     * Return the name that Theme configured in LaCrud
+     *
+     * @return string   The path to the theme configured
+     */
     private function resolveFolderTheme(){
     	$this->controller->configuration->theme((is_null($this->controller->configuration->theme())) ? 'Default' : $this->controller->configuration->theme());
     	return base_path().'/resources/views/vendor/LaCrud/'.$this->controller->configuration->theme();
     }
 
+    /**
+     * Returns header view rendered.
+     *
+     * @param $isIndex   			 Indicate if is index :v
+     * @param $positionEntityOnURL   Indicate the position on the URL where is the name of entity
+     * @return string
+     */
     private function getHeaderTheme($isIndex = false,$positionEntityOnURL = 0){
     	$basic = array(
 			'title' => $this->controller->configuration->title(),
@@ -196,6 +307,11 @@ final class TemplateBuilder{
     	return view($this->templateHeader,$information);
     }
 
+    /**
+	 * Returns the footer template rendered
+	 *
+	 * @return string 
+	 */
     private function getFooterTheme(){
     	$basic = array(
     		'permission' => $this->getPermissions()
@@ -205,16 +321,27 @@ final class TemplateBuilder{
     	return view($this->templateFooter,$information);
     }
 
+    /**
+     * Delete the basic info in the aditional data in the 
+     * more data for the header template
+     *
+     * @param $data    Array with aditional information for header template
+     * @return array
+     */
     private function purifyHeaderInfo($data){
     	if(array_key_exists('title', $data))
     		unset($data['title']);
     	if(array_key_exists('subtitle', $data))
     		unset($data['subtitle']);
-    	if(array_key_exists('userinfo', $data))    		
-    		unset($data['userinfo']);
     	return $data;
     }
 
+    /**
+     * This method prepare all columns and create an array with all 
+     * information of each field for edit or create a register.
+     *
+     * @return string The current value of the $str property
+     */
     private function clearColumns($columnsSchema,$model = null, $primary = 0){
     	$columns = array();
 		$primaryKey = $this->controller->repository->getPrimaryKey();
@@ -330,6 +457,13 @@ final class TemplateBuilder{
         return $columns;
     }
 
+    /**
+     * Resolve the name of each route for craeate a name or
+     * alias for use the 'url' method of laravel with
+     * alias for each action on crud for all actions
+     *
+     * @return string The current value of the $str property
+     */
     private function resolveRoutesPublish(){
     	$response = array();
     	foreach ($this->controller->repository->routes() as $route => $controller){
@@ -360,6 +494,11 @@ final class TemplateBuilder{
     	return $response;
     }
 
+    /**
+     * Return the privilegies for the entity
+     *
+     * @return array
+     */
     private function getPermissions(){
     	return array(
     		'add' => $this->controller->canAdd(),
@@ -371,19 +510,25 @@ final class TemplateBuilder{
     	);
     }
 
+    /**
+     * Returns the paths if the fields is type file or upload
+     *
+     * @return array or null
+     */
     private function getPathsIfHave($column){
     	$paths = null;
 	    if( array_key_exists($column->getName() , $this->controller->repository->uploads ) ){
 	    	if( is_array( $this->controller->repository->uploads[$column->getName()] ) ){
-	    		$paths = [
-	    			'public'  => ( array_key_exists('public' , $this->controller->repository->uploads[$column->getName()]) ) ? $this->controller->repository->uploads[$column->getName()]['public'] : '',
-	    			'private' => ( array_key_exists('private', $this->controller->repository->uploads[$column->getName()]) ) ? $this->controller->repository->uploads[$column->getName()]['private'] : ''
-	    		];
+	    		if( array_key_exists('public' , $this->controller->repository->uploads[$column->getName()]) ){
+	    			$paths['public'] = $this->controller->repository->uploads[$column->getName()]['public'];
+	    		}
+	    		if( array_key_exists('private', $this->controller->repository->uploads[$column->getName()]) ){
+	    			$paths['private'] = $this->controller->repository->uploads[$column->getName()]['private'];
+	    		}
 	    	}
 	    	else{
 	    		$paths = [
-	    			'public'  => $this->controller->repository->uploads[$column->getName()],
-	    			'private' => ''
+	    			'public'  => $this->controller->repository->uploads[$column->getName()]
 	    		];
 	    	}
 	    }

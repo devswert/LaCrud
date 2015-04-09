@@ -7,28 +7,177 @@ use DevSwert\LaCrud\Utils;
 abstract class LaCrudBaseRepository {
     use Utils;
 
+    /**
+     * An instance's LaCrudBaseEntity.
+     *
+     * @var LaCrudBaseEntoty
+     */
     public $entity;
+
+    /**
+     * An array with the fields that not display 
+     * in the list and detail templates
+     *
+     * @var array
+     */
     public $fieldsNotSee = array();
+
+    /**
+     * An array with alias of fields.
+     *
+     * @var array
+     */
     public $displayAs = array();
+
+    /**
+     * An array with the fields encrypted.
+     *
+     * @var array
+     */
     public $isEncrypted = array();
+
+    /**
+     * An array with fields required.
+     *
+     * @var array
+     */
     public $requiredFields = array();
+
+    /**
+     * An array with the fields type text
+     * that not use a texteditor template
+     *
+     * @var array
+     */
     public $unsetTextEditor = array();
+
+    /**
+     * An array with the field that see in 
+     * the select with foreigns keys.
+     *
+     * @var array
+     */
     public $nameDisplayForeignsKeys = array();
+
+    /**
+     * An array with the configuration of fake
+     * relations for the entity.
+     *
+     * @var array
+     */
     public $fakeRelation = array();
+
+    /**
+     * An array with the configuration of many 
+     * to many relations for the entity.
+     *
+     * @var array
+     */
     public $manyRelations = array();
+
+    /**
+     * An array with the fileds type file.
+     *
+     * @var array
+     */
     public $uploads = array();
+
+    /**
+     * An instance's QueryBuilder.
+     *
+     * @var QueryBuilder
+     */
     protected $queryBuilder;
+
+    /**
+     * It defined if get all register of table
+     *
+     * @var boolean
+     */
     protected $all = false;
+
+    /**
+     * An array with the fields type enum.
+     *
+     * @var array
+     */
     protected $enumFields = array();
+
+    /**
+     * An array with the routes registers.
+     *
+     * @var array
+     */
     protected $routes = array();
+
+    /**
+     * An array that save the errors to display
+     * for each field.
+     *
+     * @var string
+     */
     private $error;
 
+    /**
+     * Alias to like method of Laravel
+     *
+     * @param $field   
+     * @param $value
+     * @return QueryBuilder
+     */
     abstract public function like($field,$value);
+
+    /**
+     * Alias to where method of Laravel
+     *
+     * @param $field   
+     * @param $operation   
+     * @param $value
+     * @return QueryBuilder
+     */
     abstract public function where($field,$operation,$value);
+
+    /**
+     * Alias to limit function of Laravel
+     *
+     * @param $limit
+     * @return QueryBuilder
+     */
     abstract public function limit($limit);
+
+    /**
+     * Alias to orderBy function of Laravel
+     *
+     * @param $field
+     * @param $order
+     * @return QueryBuilder
+     */
     abstract public function orderBy($field,$order);
+
+    /**
+     * Alias to orLike function of Laravel
+     *
+     * @param $field
+     * @param $order
+     * @return QueryBuilder
+     */
     abstract public function orLike($field,$value);
+
+    /**
+     * Alias to orWhere function of Laravel
+     *
+     * @param $field
+     * @param $operation
+     * @param $order
+     * @return QueryBuilder
+     */
     abstract public function orWhere($field,$operation,$value);
+
+    /**
+     * Alias to get function of Laravel
+     *
+     * @return mixed
+     */
     abstract public function get();
 
     final public function find($field,$value){
@@ -36,18 +185,10 @@ abstract class LaCrudBaseRepository {
     }
 
     final public function getColumns($table = null){
-
-        //echo "<pre>";
-        //dd( Type::getTypesMap() );
-
         $table = (is_null($table)) ? $this->entity->table : $table;
 
         $connection = \DB::connection()->getDoctrineSchemaManager($table);
         $connection->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'enum');
-
-        //echo "<pre>";
-        //dd( get_class_methods($connection) );
-        //dd( $connection->listTableColumns('posts') );
 
         return $connection->listTableColumns($table);
     }
@@ -56,10 +197,6 @@ abstract class LaCrudBaseRepository {
         $connection = \DB::connection()->getDoctrineSchemaManager($this->entity->table);
         $connection->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'enum');
         $table = $connection->listTableDetails($this->entity->table);
-
-        // echo "<pre>";
-        // $tmp = $table->getForeignKeys();
-        // dd( get_class_methods($tmp['posts_user_id_foreign']) );
 
         if($table->hasPrimaryKey()){
             $field = $table->getPrimaryKey()->getColumns();

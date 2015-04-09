@@ -6,33 +6,124 @@ use Intervention\Image\Exception\NotReadableException;
 
 abstract class LaCrudBaseManager {
 
+    /**
+     * This save the content of Input::all 
+     *
+     * @var mixed
+     */
     private $attributes;
+
+    /**
+     * An array that save the configuration of 
+     * relations many to many of entity.
+     *
+     * @var array
+     */
     private $manyRelations = array();
+
+    /**
+     * Array neesary for the process with manu relations
+     *
+     * @var array
+     */
     private $configManyRelations = array();
+
+    /**
+     * Array that save the configuration of the fields in 
+     * the entety of type 'file'.
+     *
+     * @var array
+     */
     private $uploadFields = array();
+
+    /**
+     * An intance's of LaCrudBaseEntity
+     *
+     * @var LaCrudBaseEntity
+     */
     protected $entity;
+
+    /**
+     * Array with errors for Laravel Sesions
+     *
+     * @var mixed
+     */
     protected $errors;
+
+    /**
+     * Array with rules of validation for add or edit 
+     * a register in the CRUD process
+     *
+     * @var array
+     */
     public $rules = array();
+
+    /**
+     * Array with rules for create a register, this is
+     * more important than $rules 
+     *
+     * @var array
+     */
     public $rulesCreate = array();
+
+    /**
+     * Array with rules for edit a register, this is
+     * more important than $rules 
+     *
+     * @var array
+     */
     public $rulesEdit = array();
+
+    /**
+     * Array with the field's entity that doesn't edit
+     * in the forms templates 'new and edit register'
+     *
+     * @var array
+     */
     public $fieldsNotEdit = array();
+
+    /**
+     * Array with the name's fields of type text
+     * but this load without texteditor.
+     *
+     * @var array
+     */
     public $disabledTextEditor = array();
 
-    abstract public function doAfterDelete();
-    abstract public function doAfterInsert();
-    abstract public function doAfterUpdate();
-    abstract public function doAfterUpload();
+    /**
+     * Methods in evaluation
+     *
+     */
+    /*
+        abstract public function doAfterDelete();
+        abstract public function doAfterInsert();
+        abstract public function doAfterUpdate();
+        abstract public function doAfterUpload();
 
-    abstract public function doBeforeDelete();
-    abstract public function doBeforeInsert();
-    abstract public function doBeforeUpdate();
-    abstract public function doBeforeUpload();
+        abstract public function doBeforeDelete();
+        abstract public function doBeforeInsert();
+        abstract public function doBeforeUpdate();
+        abstract public function doBeforeUpload();
 
-    abstract public function skipDelete();
-    abstract public function skipInsert();
-    abstract public function skipUpdate();
-    abstract public function skipUpload();
+        abstract public function skipDelete();
+        abstract public function skipInsert();
+        abstract public function skipUpdate();
+        abstract public function skipUpload();
+    */
 
+    /**
+     * This contain the flow for update a register according to the $pk and $value
+     * given in the parameters of function. If this process return false set the
+     * attribute $errors and the function that called use the messages setters
+     * in the attribute.
+     *
+     * @param $pk              The name of primary key on entity/table.
+     * @param $value           The value or id to edit.
+     * @param $encryptFields   An array with the names of field that have Hash.
+     * @param $relations       An array with the configuration of Many Relations for the entity.
+     * @param $uploads         An array with the configuration of fields type 'file'.
+     * @return boolean
+     */
     final public function update($pk,$value,$encryptFields,$relations,$uploads){
         $this->configManyRelations = $relations;
         $this->attributes = \Input::all();
@@ -69,6 +160,15 @@ abstract class LaCrudBaseManager {
         return false;
     }
 
+    /**
+     * This contain the flow for save a new register from the form, in the case of fails 
+     * the process return false, and set the $errors attribute.
+     *
+     * @param $encryptFields   An array with the names of field that have Hash.
+     * @param $relations       An array with the configuration of Many Relations for the entity.
+     * @param $uploads         An array with the configuration of fields type 'file'.
+     * @return boolean
+     */
     final public function save($encryptFields,$relations,$uploads){
         $this->configManyRelations = $relations;
         $this->attributes = \Input::all();
@@ -92,6 +192,16 @@ abstract class LaCrudBaseManager {
         return false;
     }
 
+    /**
+     * This contain the flow for delete a register according the $pk and $value in the 
+     * entity, in the case that has a relations depending of his, return to the list
+     * template with the alert message of error. In the prox version this has a
+     * union with Hard Delete method for delete in cascade.
+     *
+     * @param $pk              The name of primary key on entity/table.
+     * @param $value           The value or id to edit.
+     * @return boolean
+     */
     final public function delete($pk,$value){
         if(\Input::has('_forcedelete')){
             $id = \Input::get('_forcedelete');
@@ -122,6 +232,14 @@ abstract class LaCrudBaseManager {
         }
     }
 
+   /**
+     * According to $key given, this methods resolve if the field is type
+     * 'file' or 'image', in the case that filed's type is 'image' and
+     * has a 'resizes' coniguration, do the crop to the images.
+     *
+     * @param $key       The field's name of entity to update
+     * @return string    The real name of file upload.
+     */
     final public function upload($key){
         //Working with Images files
         if( is_array($this->uploadFields[$key]) && array_key_exists('isImage', $this->uploadFields[$key]) && $this->uploadFields[$key]['isImage'] ){
@@ -179,7 +297,15 @@ abstract class LaCrudBaseManager {
         return $tmpFileName;
     }
 
-    //Functionals methods
+    /**
+     * According to the field this method move the temporal file loader by the user
+     * to the path indicated in the controller's configuration.
+     *
+     * @param $key       The field's name of entity to evaluate
+     * @param $type      A string that defined if is 'private' or 'public'
+     * @param $image     This can be a Image Object or null by default
+     * @return string    The real name of file upload.
+     */
     final private function moveUploadFile($key,$type,$image = null){
         if( is_array($this->uploadFields[$key][$type]) ){
             if( array_key_exists('path', $this->uploadFields[$key][$type]) ){
@@ -239,6 +365,10 @@ abstract class LaCrudBaseManager {
         return $tmpFileName;
     }
 
+    /**
+     * Method avalaible in the next version.
+     *
+     */
     final private function forceDelete($pk,$value){
         //Verificar si tiene fake relations
         //Verificar si hay relaciones reales
@@ -246,6 +376,13 @@ abstract class LaCrudBaseManager {
         return false;
     }
 
+    /**
+     * Assign the new values to entity given by reference.
+     *
+     * @param $encryptFields  The configuration of field that be type Hash
+     * @param $entity         An ocject type LaCrudBaseEntity
+     * @return void
+     */
     final private function assignValues($encryptFields, &$entity = null){
         
         foreach ($this->attributes as $key => &$value){
@@ -257,8 +394,13 @@ abstract class LaCrudBaseManager {
                 $datetimesFields = \Session::get('fields.datetime', null);
                 $booleansFields = \Session::get('fields.booleans', array());
 
-                if( in_array($key,$encryptFields) )
-                    $value = \Hash::make($value);
+                if( in_array($key,$encryptFields) ){
+                    if( is_null($entity) )
+                        $value = \Hash::make($value);
+                    else{
+                        $value = ( $entity->{$key} != '' && $value == '' ) ? $entity->{$key} : \Hash::make($value);
+                    }
+                }
                 if( in_array($key,$booleansFields) ){
                     $value = ( $value == 'on' || $value == 1 ) ? true : false;
                 }
@@ -295,6 +437,11 @@ abstract class LaCrudBaseManager {
         }
     }
 
+    /**
+     * Assign all data for the table involucrated on the many relation configurated.
+     *
+     * @return void
+     */
     final private function assignRelationsValues(){
         foreach ($this->manyRelations as $key => $values){
             if( array_key_exists($key, $this->configManyRelations) ){
@@ -317,6 +464,12 @@ abstract class LaCrudBaseManager {
         }
     }
 
+    /**
+     * Delete the keys _token, _method and the fields $fieldsNotEdit in the case
+     * that someone was send.
+     *
+     * @return void
+     */
     final private function filterInformation(){
         foreach ($this->attributes as $key => $value){
             if( in_array($key,$this->fieldsNotEdit) || $key == '_token' || $key == '_method')
@@ -324,10 +477,23 @@ abstract class LaCrudBaseManager {
         }
     }
 
+    /**
+     * Return the $errors attribute
+     *
+     * @return mixed
+     */
     final public function getErrors(){
         return $this->errors;
     }
 
+    /**
+     * Validate if the information given is valid for save or
+     * updated a register in the system, this method validate
+     * if the class has a rulesEdit or rulesCreate before
+     * of validate the information on class's $attributes
+     *
+     * @return boolean
+     */
     final private function isValid(){
         $callers = debug_backtrace();
         $parentFunction = $callers[1]['function'];
