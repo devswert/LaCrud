@@ -1,53 +1,78 @@
 <!DOCTYPE html>
-<html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>Administration | LaCrud</title>
-        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/datepicker/datepicker3.css') }} " />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/timepicker/bootstrap-timepicker.min.css') }} " />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/datatables/dataTables.bootstrap.min.css') }} " />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/daterangepicker/daterangepicker-bs3.css') }} " />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }} " />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/multiselect/multi-select.css') }} " />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/AdminLTE.css') }} " />
-        <link rel="stylesheet" type="text/css" href="{{ url('LaCrud/Default/css/FileInput/fileinput.min.css') }} " />
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-        <script>
-            window.LaCrud = {
-                texteditors : Array(),
-                manyrelations : Array()
-            };
-        </script>
-    </head>
-    <body class="skin-black">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LaCrud</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 
-		@yield('header')
-		@yield('content')
-		@yield('footer')
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Raleway:700,300' rel='stylesheet' type='text/css'>
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript"></script>
+    <link href="{{ url('LaCrud/Default/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ url('LaCrud/Default/dist/css/AdminLTE.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url('LaCrud/Default/dist/css/skins/_all-skins.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url('LaCrud/Default/plugins/iCheck/square/blue.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url('LaCrud/Default/plugins/datepicker/datepicker3.css') }} " rel="stylesheet" type="text/css"/>
+    <link href="{{ url('LaCrud/Default/plugins/timepicker/bootstrap-timepicker.min.css') }} " rel="stylesheet" type="text/css"/>
+    <link href="{{ url('LaCrud/Default/plugins/datatables/dataTables.bootstrap.css') }} " rel="stylesheet" type="text/css"/>
+    <link href="{{ url('LaCrud/Default/plugins/daterangepicker/daterangepicker-bs3.css') }} " rel="stylesheet" type="text/css"/>
+    <link href="{{ url('LaCrud/Default/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }} " rel="stylesheet" type="text/css"/>
+    <link href="{{ url('LaCrud/Default/plugins/multiselect/multi-select.css') }} " rel="stylesheet" type="text/css"/>    
+    <link href="{{ url('LaCrud/Default/plugins/FileInput/fileinput.min.css') }} " rel="stylesheet" type="text/css"/>
+    
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+        window.LaCrud = {
+            texteditors : Array(),
+            manyrelations : Array()
+        };
+    </script>
+</head>
+    <!--<body class="{{ (Auth::guest()) ? 'login-page' : 'skin-blue' }}">-->
+    <body class="skin-yellow">
+
+        <div class="wrapper">
+
+            @yield('header')
+
+            @yield('content')
+
+            @yield('footer')
+
+            <!--
+            if (!Auth::guest())
+                yield('header')
+            endif
+
+    		yield('content')
+
+            if (!Auth::guest())
+    		    yield('footer')
+            endif
+            -->
+        </div>
+
+        <script src="{{ url('LaCrud/Default/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
+        <script src="{{ url('LaCrud/Default/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
+        <script src="{{ url('LaCrud/Default/plugins/iCheck/icheck.min.js') }}" type="text/javascript"></script>
         <script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
         <script src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
-
-        <script src="{{ url('LaCrud/Default/js/plugins/daterangepicker/daterangepicker.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/datepicker/bootstrap-datepicker.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/timepicker/bootstrap-timepicker.min.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/iCheck/icheck.min.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/datatables/jquery.dataTables.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/datatables/dataTables.bootstrap.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/multiselect/jquery.multi-select.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/multiselect/jquery.quicksearch.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/plugins/FileInput/fileinput.min.js') }} "></script>
-        <script src="{{ url('LaCrud/Default/js/AdminLTE/app.js') }} "></script>
-
+        <script src="{{ url('LaCrud/Default/plugins/daterangepicker/daterangepicker.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/datepicker/bootstrap-datepicker.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/timepicker/bootstrap-timepicker.min.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/datatables/jquery.dataTables.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/datatables/dataTables.bootstrap.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/multiselect/jquery.multi-select.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/multiselect/jquery.quicksearch.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/plugins/FileInput/fileinput.min.js') }} "></script>
+        <script src="{{ url('LaCrud/Default/dist/js/app.js') }} "></script>
 		<script>
 			$(document).ready(function(){
                 //Init Datatables for indexs views
@@ -74,6 +99,12 @@
                     showInputs: false,
                     showSeconds: true,
                     showMeridian: false
+                });
+
+                $('input').iCheck({
+                    checkboxClass: 'icheckbox_square-blue',
+                    radioClass: 'iradio_square-blue',
+                    increaseArea: '20%'
                 });
 
                 //Init fields manyrelations
@@ -119,6 +150,5 @@
                 }
 			});
 		</script>
-
     </body>
 </html>

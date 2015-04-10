@@ -13,8 +13,8 @@
     <section class="content">
         <div class="row">
             <div class="col-xs-12">
-                <div class="box box-success">
-                    <div class="box-header">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
                         <h3 class="box-title">{{ trans('lacrud::templates.title_show') }}</h3>
                     </div>
                     <div class="box-body">

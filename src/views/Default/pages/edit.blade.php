@@ -13,15 +13,17 @@
     <section class="content">
         <div class="row">
             <div class="col-xs-12">
-                <div class="box box-success">
-                    <div class="box-header">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
                         <h3 class="box-title">{{ trans('lacrud::templates.title_edit') }}</h3>
                     </div>
                     <form action="{{ URL::route('lacrud.'.$entity.'.update', array('id' => $pk) ) }}" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="_method" value="PUT">
                         <div class="box-body">
-                            {!! $form !!}
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_method" value="PUT">
+                            <div class="box-body">
+                                {!! $form !!}
+                            </div>
                         </div>
                         <div class="box-footer clearfix">
                             <a href="{{ URL::route('lacrud.'.$entity.'.index') }}" class="btn btn-default pull-left">

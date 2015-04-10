@@ -29,14 +29,14 @@
                 </div>                
             @endif
 
-            <div class="col-xs-12">
-                <div class="box">
-                    <div class="box-body table-responsive">
+            <div class="col-md-12 col-xs-12">
+                <div class="box box-solid">
+                    <div class="box-body">
                         <table id="dataTableInfo" class="table table-bordered table-striped">
                             <thead>
                                 <tr>                                    
                                     @foreach($headers as $header)
-                                        <td>{{ $header }}</td>
+                                        <th>{{ $header }}</th>
                                     @endforeach
                                 </tr>
                             </thead>
