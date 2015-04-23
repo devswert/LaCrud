@@ -162,6 +162,12 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.index',array(
 			'header' => $this->getHeaderTheme(true),
+
+			'title' => $this->controller->configuration->title(),
+			'subtitle' => $this->controller->configuration->subtitle(),
+			'isIndex' => true,
+			'permission' => $this->getPermissions(),
+
 			'template' => $this->templateLayout,
 			'headers' => $headers,
 			'keys' => $keys,
@@ -184,6 +190,12 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.create',array(
 			'header' => $this->getHeaderTheme(),
+
+			'title' => $this->controller->configuration->title(),
+			'subtitle' => $this->controller->configuration->subtitle(),
+			'isIndex' => false,
+			'permission' => $this->getPermissions(),
+
 			'template' => $this->templateLayout,
 			'columns' => $columns,
 			'permission' => $this->getPermissions(),
@@ -219,6 +231,12 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.show',array(
 			'header' => $this->getHeaderTheme(),
+
+			'title' => $this->controller->configuration->title(),
+			'subtitle' => $this->controller->configuration->subtitle(),
+			'isIndex' => false,
+			'permission' => $this->getPermissions(),
+
 			'template' => $this->templateLayout,
 			'columns' => $data,
 			'pk' => $primaryKey,
@@ -251,6 +269,12 @@ final class TemplateBuilder{
 
 		return view($this->base_theme.'pages.edit',array(
 			'header' => $this->getHeaderTheme(),
+
+			'title' => $this->controller->configuration->title(),
+			'subtitle' => $this->controller->configuration->subtitle(),
+			'isIndex' => false,
+			'permission' => $this->getPermissions(),
+
 			'template' => $this->templateLayout,
 			'form' => $this->formBuilder->generateFormAddOrEdit($columns),
 			'pk' => $primary,
@@ -293,13 +317,9 @@ final class TemplateBuilder{
      * @param $positionEntityOnURL   Indicate the position on the URL where is the name of entity
      * @return string
      */
-    private function getHeaderTheme($isIndex = false,$positionEntityOnURL = 0){
+    public function getHeaderTheme($isIndex = false,$positionEntityOnURL = 0){
     	$basic = array(
-			'title' => $this->controller->configuration->title(),
-			'subtitle' => $this->controller->configuration->subtitle(),
 			'entity' => \Request::segment(count(explode('/', \Request::path())) - $positionEntityOnURL ),
-			'isIndex' => $isIndex,
-			'permission' => $this->getPermissions(),
 			'entityNames' => $this->resolveRoutesPublish()
 		);
 		$moreInfo = $this->purifyHeaderInfo($this->controller->configuration->moreDataHeader());
@@ -312,7 +332,7 @@ final class TemplateBuilder{
 	 *
 	 * @return string 
 	 */
-    private function getFooterTheme(){
+    public function getFooterTheme(){
     	$basic = array(
     		'permission' => $this->getPermissions()
     	);

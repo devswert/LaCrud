@@ -4,7 +4,7 @@ LaCrud es una herramienta que te ayudará a crear CRUDs en Laravel de manera rá
 
 LaCrud está construido para que funcione con la nueva **versión 5 de Laravel** :)
 
-En estos momentos, LaCrud se encuentra en una versión beta y en desarrollo, pero ya se pueden aprovehar algunos de sus beneficios que son:
+En estos momentos, LaCrud se encuentra en una versión de desarrollo, pero ya se pueden aprovehar algunos de sus beneficios que son:
 
  * Indicar el nombre de la tabla y LaCrud realizará el trabajo por ti.
  * Todo el proceso de un CRUD funcionado en solo unos minutos.
@@ -14,8 +14,8 @@ En estos momentos, LaCrud se encuentra en una versión beta y en desarrollo, per
  * Capacidad de denegar operaciones del CRUD.
  * Filtro de contenido en la vista.
  * Visualización de solo algunos campos en las distintas operaciones.
- * Pasar los botones y textos como paquete de idiomas.
- * Soporte para que agregues tu propio tema en LaCrud.
+ * Los textos de botones y notificaciones estan bajo paquetes de idiomas.
+ * Soporte para que agregues tu propio tema de LaCrud.
  * Helper para carga de imágenes y manipulación de estas.
 
 Aunque LaCrud ya está operativo en su gran medida, también tiene objetivos para su versión 1, entre ellos:
@@ -23,7 +23,7 @@ Aunque LaCrud ya está operativo en su gran medida, también tiene objetivos par
  * Funciones de imprimir y exportar datos.
  * Callbacks para las diferentes operaciones.
  * Eliminación masiva para cuando existan registros relacionados por claves foraneas en tu Base de Datos
- * Edición de campos tipo 'imagén' o 'archivos', con su correspondiente eliminación del archivo local si el registro cambia.
+ * Eliminar archivos estaticos al momento que cambian los valores de los campos tipo uploads.
  * Mejor manipulación de imaganes a traves de [Intervention Image](http://image.intervention.io/)
 
 ## Instalación
@@ -31,13 +31,13 @@ Aunque LaCrud ya está operativo en su gran medida, también tiene objetivos par
 Puedes instalar LaCrud via Composer
 
 ```
-composer require devswert/lacrud
+composer require devswert/lacrud dev-master
 ```
 
 O agregarlo en tu composer.json y ejecutar composer update
 
 ```
-"devswert/lacrud": "~0.8"
+"devswert/lacrud": "dev-master"
 ```
 
 Una vez terminada la instalación, debes agregar el ServiceProvider y Facade de LaCrud en tu configuración (config/app.php)
@@ -52,17 +52,28 @@ Una vez terminada la instalación, debes agregar el ServiceProvider y Facade de 
 'LaCrud'	=> 'DevSwert\LaCrud\LaCrudFacade'
 ```
 
+El último paso es publicar los assets y el tema básico para el funcionamiento de LaCrud mediante:
+
+```
+php artisan vendor:publish
+```
+
 ## Uso Básico
 
 Una vez instalado LaCrud, ya puedes usarlo directamente en tu archivo de rutas de la siguiente manera:
 
 ```php
-LaCrud::RegisterCrud([
-	'users',
-	'posts',
-    'otra_tabla'
-]);
+App::singleton('LaCrud_Routes', function(){
+    return [
+	    'users',
+	    'multimedia'
+	];
+});
+
+LaCrud::RegisterCrud(app('LaCrud_Routes'));
 ```
+Se debe declara *LaCrud_Routes*, mediante esta instancia en la App, asi, cualquier request a la aplicación puede tener acceso a cuales son las rutas declaradas bajo LaCrud.
+
 Donde cada elemento del array es una tabla en la Base de Datos. Ahora, se podría ingresar desde el navegador a:
 
 ```
@@ -72,35 +83,47 @@ http://proyecto.app/users
 En el caso que se requiera cambiar el tema por defecto de LaCrud se debe realizar de la siguiente manera:
 
 ```php
+App::singleton('LaCrud_Routes', function(){
+    return [
+	    'users',
+	    'multimedia'
+	];
+});
+
 LaCrud::theme('MyAwesomeTheme')
-	->RegisterCrud([
-		'users',
-		'posts',
-    	'otra_tabla'
-]);
+	->RegisterCrud(app('LaCrud_Routes'));
 ```
 El tema integrado por defecto en LaCrud listará todas las tablas en un menu lateral, pero en el caso que no se quiera agregar cierto indice en en el menu se debe indicar de la siguiente manera:
 
 ```php
-LaCrud::theme('MyAwesomeTheme')
-	->RegisterCrud([
-		'users',
+App::singleton('LaCrud_Routes', function(){
+    return [
+	    'users',
 		'posts' => [
 			'showInMenu' => false
 		],
-    	'otra_tabla'
-]);
+	];
+});
+
+LaCrud::theme('MyAwesomeTheme')
+	->RegisterCrud(app('LaCrud_Routes'));
 ```
 
 Ya que mediante el array solo se registra el nombre de la tabla y no una ruta hasta ella, se puede agregar el metodo `prefix` para indicar un path común.
 
 ```php
-LaCrud::prefix('admin')
-->RegisterCrud([
-	'users',
-	'posts',
-    'otra_tabla'
-]);
+App::singleton('LaCrud_Routes', function(){
+    return [
+	    'users',
+		'posts' => [
+			'showInMenu' => false
+		],
+	];
+});
+
+LaCrud::theme('MyAwesomeTheme')
+	->prefix('admin')
+	->RegisterCrud(app('LaCrud_Routes'));
 ```
 
 De esta manera, ahora se debe acceder a él mediante:
@@ -114,14 +137,17 @@ http://proyecto.app/admin/users
 En el caso que se quieran agregar un alias a la tabla, agregar validadores a los campos, en si, personalizar tu CRUD a una tabla, debes indicarlo mediante un controlador de la siguiente manera (también se agrego el como quedaría si no se quiere mostrar en el menu):
 
 ```php
-LaCrud::RegisterCrud([
-	'usuarios' => [
-    	'controller' => 'UsersController',
-        'showInMenu' => false
-    ]
-	'posts',
-    'otra_tabla'
-]);
+App::singleton('LaCrud_Routes', function(){
+    return [
+	    'users' => 'UsuariosController',
+		'posts' => [
+			'showInMenu' => false
+		],
+	];
+});
+
+LaCrud::theme('MyAwesomeTheme')
+	->RegisterCrud(app('LaCrud_Routes'));
 ```
 
 **Ya que Laravel 5 trabaja en base a namespaces**, LaCrud asume que el namespace de tus controladores se encuentra en `App\Http\Controllers`, en el caso que se tenga un sub-namespace de los controladores para LaCrud, deben enunciarse en el valor del array, por ej: `'usuarios' => 'LaCrud\UsuariosController'`, esto buscara la clase `App\Http\Controller\LaCrud\UsuariosController`
@@ -413,19 +439,15 @@ Cuando se declara un campo de *upload* que sera una imagen, al archivo final se 
 
 ## Creación de Templates
 
-LaCrud viene con un tema por defecto basado en [AdmiLTE](https://almsaeedstudio.com/) en su versión 1.x. (Actualmente se esta construyendo un tema para la [versión 2.x de AdminLTE](https://almsaeedstudio.com/themes/AdminLTE/index2.html)).
+LaCrud viene con un tema por defecto basado en [AdmiLTE](https://almsaeedstudio.com/themes/AdminLTE/index2.html).
 
 Pero no es obligación quedarse con este tema, quizas tu proyecto ya tiene assets predefinidos y quieres usarlos en tu proyecto, para ello LaCrud consta con un sistema de Template básico para funcionar y amoldarse al desarrollo final del producto.
 
 Para aplicar un tema al proyecto, en la rutas se debe indicar de la siguiente manera:
 
 ```php
-LaCrud::RegisterCrud([
-	'users',
-	'posts',
-    'otra_tabla'
-])
-.theme('MyAwesomeThemeForLaCrud');
+LaCrud::theme('MyAwesomeTheme')
+    ->RegisterCrud(app('LaCrud_Routes'));
 ```
 > En estos momentos se esta trabajando para tener un repositorio o fuente de temas para LaCrud.
 
@@ -483,9 +505,29 @@ Es importante destacar que:
 
 > Para crear un tema se puede descargar [esta base de creación]() para personalizarla de la manera que se estime conveniente.
 
+### Vista personalizada de "Mi Aplicación"
+
+Nuestra aplicación también debe colgarse de los templates base de LaCrud, por ejemplo, podemos tener */resources/admin/dashboard.blade.php*, y necesitamos que esta vista use los mismos recursos del tema de LaCrud, para ello nuestro archivo debera lucir de esta manera:
+
+```php
+@extends('vendor.LaCrud.YourAwesomeTheme.layout')
+
+@section('header')
+    {!! LaCrud::renderHeader() !!}
+@stop
+
+@section('footer')
+    {!! LaCrud::renderFooter() !!}
+@stop
+
+@section('content')
+    Tu contenido de la vista con {{ $variables }} de Blade
+@stop
+```
+
 ### Sistema MultiIdioma
 
-LaCrud tiene sus mensajes de alerta, texto de botones y demas bajo el sistema de [idioma de Laravel](), la estructura de estos es:
+LaCrud tiene sus mensajes de alerta, texto de botones y demas bajo el sistema de [idioma de Laravel](http://laravel.com/docs/5.0/localization), la estructura de estos es:
 
 ```
 ├── ProjectName/

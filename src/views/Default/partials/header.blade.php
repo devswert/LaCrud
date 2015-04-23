@@ -76,15 +76,3 @@
 
 <!-- Page Content -->
 <div class="content-wrapper">
-    <!-- Content Header-->
-    <section class="content-header clearfix">
-        <h1 class="pull-left">
-            {{ $title }}
-            <small>{{ $subtitle }}</small>
-        </h1>
-         @if( $isIndex && $permission['add'] )
-            <a href="{{ URL::route('lacrud.'.$entity.'.create') }}" class="btn btn-success pull-right">
-                <span class="fa fa-plus-circle"></span> {{ trans('lacrud::templates.new_register') }}
-            </a>
-        @endif
-    </section>

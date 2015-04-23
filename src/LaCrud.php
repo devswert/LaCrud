@@ -4,6 +4,7 @@
 	use DevSwert\LaCrud\Data\Manager\LaCrudManager;
 	use DevSwert\LaCrud\Data\Repository\LaCrudRepository;
 	use DevSwert\LaCrud\Data\Entity\LaCrudBaseEntity;
+	use DevSwert\LaCrud\Theme\TemplateBuilder;
 	use Illuminate\Support\Facades\Route;
 	use Illuminate\Console\AppNamespaceDetectorTrait;
 
@@ -117,6 +118,49 @@
 	    		}));
 			}
 	    	return $this;
+	    }
+
+	    /**
+		 * This method return the rendered header template
+		 *
+		 * @return string
+		 */
+	    public function renderHeader(){
+	    	$templateBuilder = $this->getInstanceOfTemplateBuilder();
+	    	return $templateBuilder->getHeaderTheme()->render();
+	    }
+
+	    /**
+		 * This method return the rendered footer template
+		 *
+		 * @return string
+		 */
+	    public function renderFooter(){
+	    	$templateBuilder = $this->getInstanceOfTemplateBuilder();
+			return $templateBuilder->getFooterTheme()->render();
+	    }
+
+	    /**
+		 * This method return a instance of Templatebuilder with
+		 * fake init for get basic templates.
+		 *
+		 * @return a TemplateBuilder instance
+		 */
+	    private function getInstanceOfTemplateBuilder(){
+	    	if(app()->offsetExists('LaCrud_Routes')){
+	    		$entity = new LaCrudBaseEntity();
+				$manager = new LaCrudManager($entity);
+				$repository = new LaCrudRepository($entity);
+				$repository->routes(app('LaCrud_Routes'));
+				$config = new Configuration();
+
+				$controller = new LaCrudController($repository,$manager,$config);
+
+				return new TemplateBuilder($controller);
+	    	}
+	    	else{
+	    		$this->throwException("LaCrud required the singleton's app instance with name LaCrud_Routes, this content the array of table to do a CRUD");
+	    	}
 	    }
 	 
 	}
