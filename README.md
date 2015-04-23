@@ -16,7 +16,7 @@ In this moment, LaCrud is in development, but even now, you can use some of its 
  * Capacity to deny operations or actions of CRUD.
  * Content filter in the list view.
  * Show only some fields in diferents operations.
- <!--- * The texts of bottons and notifications use a package of languages. ---> (wat)
+ * The texts of bottons and notifications use a package of languages. (wat)
  * Support to add custom themes.
  * Manager to upload files and images. You can also crop the image afterwards.
 
