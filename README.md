@@ -1,34 +1,34 @@
 ## LaCrud
 
-**The documentation is avalaible [in Spanish](https://github.com/leonardoDavid/LaCrud/blob/master/README-es.md) too.**
+**This documentation is avalaible also [in Spanish](https://github.com/leonardoDavid/LaCrud/blob/master/README-es.md).**
 
-LaCrud is a tool that help you to create a Laravel's CRUD faster and without break desging patterns on your application, because it's a component that integrate and try mold in your development.
+LaCrud is a tool that helps you to create a Laravel CRUD faster and without breaking design patterns on your application, because it's a component that integrates and tries to mold into your development.
 
-LaCurd is built for this work with tha new **Laravel 5** :)
+LaCrud is built to work with the latest **Laravel 5** :)
 
-In this moment, LaCrud is in a development version, but now, you can use something of his beneficies:
+In this moment, LaCrud is in development, but even now, you can use some of its features:
 
- * Indicate the name's table and LaCrud create all CRUD for you.
- * All proccess of CRUD working on few minutes.
+ * Indicate the table name and LaCrud creates all CRUD for you.
+ * The whole proccess of a CRUD working on a few minutes.
  * Detection of native relations on your Database.
- * Capacity for create a fake relations by code.
+ * Abbility to create fake relationships by code.
  * Add "n to n" relation on your entity.
- * Capacity of denied operations or actions of CRUD.
- * Filter of content in the list view.
+ * Capacity to deny operations or actions of CRUD.
+ * Content filter in the list view.
  * Show only some fields in diferents operations.
- * The texts of bottons and notifications use a package of languages.
- * Support for you can create or add your own theme.
- * Manager for upload files and images. You can crop the image too.
+ <!--- * The texts of bottons and notifications use a package of languages. ---> (wat)
+ * Support to add custom themes.
+ * Manager to upload files and images. You can also crop the image afterwards.
 
-Maybe LaCrud is operaty in his totality, too has objetives for his first version:
+While LaCrud is fully operational, it also has objectives for his first version: (wat)
 
- * Function for print and export data.
+ * Function to print and export data.
  * Callbacks for differents operations.
- * Masive delete for when exist registers with foreigns relations in your database.
- * Delele files when change the value on field type 'upload'.
- * Best manipulation with Images thanks to [Intervention Image](http://image.intervention.io/)
+ * Massive deletion for when exist registers with foreign relations in your database. (wat)
+ * Delete files when the value changes on field type 'upload'.
+ * Better manipulation with Images thanks to [Intervention Image](http://image.intervention.io/)
 
-## Instalation
+## Installation
 
 You can install LaCrud via Composer.
 
@@ -36,13 +36,13 @@ You can install LaCrud via Composer.
 composer require devswert/lacrud dev-master
 ```
 
-Or added on your composer.json and exec composer update
+Or add it on your `composer.json` and `exec composer update`
 
 ```
 "devswert/lacrud": "dev-master"
 ```
 
-Once time finished to instalation, you should add the ServiceProvider and Facade for LaCrud in your configuration (config/app.php)
+Once it finishes to install, you should add the ServiceProvider and Facade for LaCrud in your configuration (config/app.php)
 
  - ServiceProvider
 ```
@@ -54,7 +54,7 @@ Once time finished to instalation, you should add the ServiceProvider and Facade
 'LaCrud'	=> 'DevSwert\LaCrud\LaCrudFacade'
 ```
 
-The last step is publish the assets and the theme for basic funcionality of LaCrud via:
+The last step is to publish the assets and the theme for LaCrud's basic funcionality via:
 
 ```
 php artisan vendor:publish
@@ -62,7 +62,7 @@ php artisan vendor:publish
 
 ## Basic use
 
-Once time instaled LaCrud, you can using directly in your routes' files:
+Once installed, you can use directly in your routes' files:
 
 ```php
 App::singleton('LaCrud_Routes', function(){
