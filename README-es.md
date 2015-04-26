@@ -4,9 +4,9 @@ LaCrud es una herramienta que te ayudará a crear CRUDs en Laravel de manera rá
 
 LaCrud está construido para que funcione con la nueva **versión 5 de Laravel** :)
 
-En estos momentos, LaCrud se encuentra en una versión de desarrollo, pero ya se pueden aprovehar algunos de sus beneficios que son:
+En estos momentos, LaCrud se encuentra en una versión de desarrollo, pero ya se pueden aprovechar algunos de sus beneficios que son:
 
- * Indicar el nombre de la tabla y LaCrud realizará el trabajo por ti.
+ * Indica el nombre de la tabla y LaCrud realizará el trabajo por ti.
  * Todo el proceso de un CRUD funcionado en solo unos minutos.
  * Detección de relaciones nativas de tu Base de Datos
  * Capacidad de crear relaciones foráneas falsas por código.
@@ -80,7 +80,7 @@ Donde cada elemento del array es una tabla en la Base de Datos. Ahora, se podrí
 http://proyecto.app/users
 ```
 
-En el caso que se requiera cambiar el tema por defecto de LaCrud se debe realizar de la siguiente manera:
+En el caso que se requiera cambiar el tema por defecto de LaCrud, se debe realizar de la siguiente manera:
 
 ```php
 App::singleton('LaCrud_Routes', function(){
@@ -93,7 +93,7 @@ App::singleton('LaCrud_Routes', function(){
 LaCrud::theme('MyAwesomeTheme')
 	->RegisterCrud(app('LaCrud_Routes'));
 ```
-El tema integrado por defecto en LaCrud listará todas las tablas en un menu lateral, pero en el caso que no se quiera agregar cierto indice en en el menu se debe indicar de la siguiente manera:
+El tema integrado por defecto en LaCrud listará todas las tablas en un menu lateral, pero en el caso que no se quiera agregar cierto indice en el menú, se debe indicar de la siguiente manera:
 
 ```php
 App::singleton('LaCrud_Routes', function(){
@@ -134,7 +134,7 @@ http://proyecto.app/admin/users
 
 **ESTO APLICA PARA TODAS LAS RUTAS, NO ES INDIVIDUAL**
 
-En el caso que se quieran agregar un alias a la tabla, agregar validadores a los campos, en si, personalizar tu CRUD a una tabla, debes indicarlo mediante un controlador de la siguiente manera (también se agrego el como quedaría si no se quiere mostrar en el menu):
+En el caso que se quieran agregar un alias a la tabla, agregar validadores a los campos, en si, personalizar tu CRUD a una tabla, debes indicarlo mediante un controlador de la siguiente manera (también se agregó el cómo quedaría si no se quiere mostrar en el menu):
 
 ```php
 App::singleton('LaCrud_Routes', function(){
@@ -193,7 +193,7 @@ Mediantes los objetos *LaCrudRepository* y *LaCrudManager* es como se realizará
 
 La configuración de Título y Subtítulo son opcionales, y se utilizan en el Template del sistema.
 
-**Todos los cambios y configuraciones en los repositorios y manager se deben realizar en el constructor, para que asi aplique en todas las rutas**.
+**Todos los cambios y configuraciones en los repositorios y manager se deben realizar en el constructor, para que así aplique en todas las rutas**.
 
 ### Restricción de campos
 
@@ -218,7 +218,7 @@ $this->manager->fieldsNotEdit = [
 
 ### Alias de campos
 
-Si no queremos que se despliege el nombre original de nuestro campo de la Base de Datos, podemos establecer alias:
+Si no queremos que se despliegue el nombre original de nuestro campo de la Base de Datos, podemos establecer alias:
 
 ```php
 $this->repository->displayAs = [
@@ -266,7 +266,7 @@ $this->repository->fakeRelation = [
 ];
 ```
 
-Donde *fake_user* en el nombre del campo en nuestra tabla local que deseamos relacionar con los datos indicados en su array de opciones, *field* seria lo similar a la primary key foranea y *alias* es el nombre que se mostrara "amigable" para el usuario final, este último es totalmente opcional.
+Donde *fake_user* es el nombre del campo en nuestra tabla local que deseamos relacionar con los datos indicados en su array de opciones, *field* seria lo similar a la primary key foranea y *alias* es el nombre que se mostrará "amigable" para el usuario final, este último es totalmente opcional.
 
 ### Relaciones muchos a muchos
 
@@ -291,26 +291,26 @@ $this->repository->manyRelations = [
 ];
 ```
 
-Donde `post_de_usuario` es el nombre que se desplegara en el formulario, LaCrud toma este nombre y remplaza los "_" por " " (espacios), posterior a eso aplica *camelcase* al nombre dividido. 
+Donde `post_de_usuario` es el nombre que se desplegara en el formulario, LaCrud toma este nombre y remplaza los "_" por " " (espacios), posterior a eso aplica *camelcase* al nombre dividido.
 
 Entre las opciones que recibe estan `pivot`, `remote` y `local_key`. En `pivot` se almacenan los datos de la tabla pivote o intermediaria entre ambas tablas principales, de esta, la llave `order` es totalmente opcional. En la clave `remote` se almacena la información de la tabla externa, de ella es importante identificar el campo `display`, que es el nombre amigable que se deplegara en el select multiple. Y la llava `local_key` se setea cuando la llave primaria de la tabla es diferente de *id*.
 
 ### Validaciones
 
-Es muy importante mantener siempre estar validando lo que ingrese nuestro usuario final al sistema, por lo que LaCrud aprovecha el sistema de [validaciones de Laravel](http://laravel.com/docs/5.0/validation) para resolverlo, las validaciones aqui indicadas aplican para **la creación y edición de los registros** y estas deben ser aplicadas de la siguiente manera:
+Es muy importante mantener siempre estar validando lo que ingrese nuestro usuario final al sistema, por lo que LaCrud aprovecha el sistema de [validaciones de Laravel](http://laravel.com/docs/5.0/validation) para resolverlo, las validaciones aquí indicadas aplican para **la creación y edición de los registros** y estas deben ser aplicadas de la siguiente manera:
 
 ```php
 $this->manager->rules = [
 	'password' => 'required'
 ];
 ```
-Aunque, por algún extraño motivo del universo, las validaciones al momento de editar un registro pueden ser diferentes que las de crear el mismo registro, para ello LaCrud dispone de *$this->manager->rulesCreate* y *$this->manager->rulesEdit*, ambas propiedades deben ser un array al igual que *rules*, y tienen prioridad por sobre *$this->manager->rules*.
+Aunque, por algún extraño motivo del universo, las validaciones al momento de editar un registro pueden ser diferentes que las de crear el mismo registro, para ello LaCrud dispone de `$this->manager->rulesCreate` y `$this->manager->rulesEdit`, ambas propiedades deben ser un array al igual que *rules*, y tienen prioridad por sobre `$this->manager->rules`.
 
 ### Deshabilitar opciones del CRUD
 
 En el caso que se requiera deshabilitar ciertas caracteristicas del CRUD se puede usar:
 
-- Para deshabilitar la edicion
+- Para deshabilitar la edición
 
 ```php
 $this->unsetEdit();
@@ -325,16 +325,16 @@ $this->unsetRead();
 ```php
 $this->unsetAdd();
 ```
-- Para deshabilitar que tenga acceso a eliminar registros.
+- Para deshabilitar que se tenga acceso a eliminar registros.
 
 ```php
 $this->unsetDelete();
 ```
-> Cuando se trata de acceder a estos recursos que fieron *bloqueados* LaCrud realiza el render de la vista `403.blade.php` ubicada en *partials*.
+> Cuando se trata de acceder a estos recursos que fueron *bloqueados* LaCrud realiza el render de la vista `403.blade.php` ubicada en *partials*.
 
 ### Filtros al listar
 
-En el caso que en la lista general se necesite mostrar un filtro de registros, LaCrud tiene metodos para ayudar esa tarea. Para aplicar el filtro debemos sobreescribir el metodo `index` del controlador. Un ejemplo quedaria similar a:
+En el caso que en la lista general se necesite mostrar un filtro de registros, LaCrud tiene métodos para ayudar a esa tarea. Para aplicar el filtro, debemos sobreescribir el metodo `index` del controlador. Un ejemplo quedaría similar a:
 
 ```php
 	public function index(){
@@ -379,18 +379,18 @@ $this->repository->orWhere($field,$operator,$value);
 
 ### Manejo de Fechas
 
-Por defecto, LaCrud omite la edicón de los campos `created_at`, `updated_at` y `deleted_at`. Pero en el caso que se necesiten para editar se puede acceder a las funciones:
+Por defecto, LaCrud omite la edición de los campos `created_at`, `updated_at` y `deleted_at`. Pero en el caso que se necesiten editar, se puede acceder a las funciones:
 
 ```php
 $this->showUpdatedAt();
 $this->showCreatedAt();
 $this->showDeletedAt();
 ```
-> Reuerden que estan funciones y se deben agregar en el constructor del controlador.
+> Recuerda que estan funciones y se deben agregar en el constructor del controlador.
 
 ## Carga de Archivos y Fotos
 
-Sabemos que los desarrollos no simplemente son CRUDs a datos de una tabla, muchas veces el usuario necesita cargar docuementos, subir fotos, que estas fotos al cagar se redimencionen, etc., los clientes tienen bastante imaginación para pensar en lo imposible. Pero dentro de lo posible LaCrud trae incorporado un sistema de carga de archivos y fotos, el cual también debe setearse en el constructor del controlador, la configuración quedaría un tanto similar a:
+Sabemos que los desarrollos no simplemente son CRUDs a datos de una tabla, muchas veces el usuario necesita cargar docuementos, subir fotos, que estas fotos al cagar se redimensionen, etc., los clientes tienen bastante imaginación para pensar en lo imposible. Pero dentro de lo posible LaCrud trae incorporado un sistema de carga de archivos y fotos, el cual también debe setearse en el constructor del controlador, la configuración quedaría un tanto similar a:
 
 ```php
 $this->repository->uploads = [
@@ -415,7 +415,7 @@ $this->repository->uploads = [
 		],
         'private' => 'private/path',
 		'isImage' => true
-	]	
+	]
 ];
 ```
 
@@ -425,13 +425,13 @@ En el ejemplo de código anterior se logra apreciar todas las opciones que se pu
 
 > Cuando se habla de **directorio privado** se considera como ruta base el resultado de la función [base_path() de Laravel](http://laravel.com/docs/5.0/helpers#paths).
 
-El el primer ejemplo de la llave `word`, el valor es la ruta pública donde se almacenara el archivo.
+En el primer ejemplo de la llave `word`, el valor es la ruta pública donde se almacenará el archivo.
 
-El segundo caso de la llave `excel`, este recibe un array con las rutas donde se almacenara el archivo de manera privada y pública.
+El segundo caso de la llave `excel`, este recibe un array con las rutas donde se almacenará el archivo de manera privada y pública.
 
 El tercer ejemplo de la llave `pdf` es solo otra forma en la cual funciona el uso de `paths`, esto funciona, pero es recomendable la estructura para el siguiente ejemplo.
 
-El cuarto ejemplo aplica a cuando tenemos un campo que para el usuario sera carga de una imagen. Para ello se debe indicar con una llave `isImage` como `true`. Las otras son llaves aceptadas son `public` y `private`. En ellas se puede indicar mediante un string la ruta de destino,  o, con un array indicar la llave `path`, que es la ruta de destino, y la llave `resizes`, que corresponde a las redimensiones que se realizaran a la imagen cuando se guarde o actualice el registro. El formato de este es: Como llave recibe un prefijo y como valor un array con maximo 4 valores númericos, estos valores se utilizan para ejecutar la función [crop de Intervention Image](http://image.intervention.io/api/crop). 
+El cuarto ejemplo aplica a cuando tenemos un campo que para el usuario sera carga de una imagen. Para ello se debe indicar con una llave `isImage` como `true`. Las otras son llaves aceptadas son `public` y `private`. En ellas se puede indicar mediante un string la ruta de destino,  o, con un array indicar la llave `path`, que es la ruta de destino, y la llave `resizes`, que corresponde a las redimensiones que se realizaran a la imagen cuando se guarde o actualice el registro. El formato de este es: Como llave recibe un prefijo y como valor un array con maximo 4 valores númericos, estos valores se utilizan para ejecutar la función [crop de Intervention Image](http://image.intervention.io/api/crop).
 
 Cuando se declara un campo de *upload* que sera una imagen, al archivo final se le agrega un prefijo de 10 caracteres entre números y letras antes del nombre original del archivo, si se realiza un resize de una imagen, primero agrega el prefijo del resize y luego el del nombre de la imagen, por ejemplo `lg-a5eg49FdeP-nombrereal.jpg`.
 
@@ -441,7 +441,7 @@ Cuando se declara un campo de *upload* que sera una imagen, al archivo final se 
 
 LaCrud viene con un tema por defecto basado en [AdmiLTE](https://almsaeedstudio.com/themes/AdminLTE/index2.html).
 
-Pero no es obligación quedarse con este tema, quizas tu proyecto ya tiene assets predefinidos y quieres usarlos en tu proyecto, para ello LaCrud consta con un sistema de Template básico para funcionar y amoldarse al desarrollo final del producto.
+Pero no es obligación quedarse con este tema, quizás tu proyecto ya tiene assets predefinidos y quieres usarlos en tu proyecto, para ello LaCrud consta con un sistema de Template básico para funcionar y amoldarse al desarrollo final del producto.
 
 Para aplicar un tema al proyecto, en la rutas se debe indicar de la siguiente manera:
 
@@ -449,7 +449,7 @@ Para aplicar un tema al proyecto, en la rutas se debe indicar de la siguiente ma
 LaCrud::theme('MyAwesomeTheme')
     ->RegisterCrud(app('LaCrud_Routes'));
 ```
-> En estos momentos se esta trabajando para tener un repositorio o fuente de temas para LaCrud.
+> En estos momentos se está trabajando para tener un repositorio o fuente de temas para LaCrud.
 
 ### Estructura de Directorios
 
@@ -500,14 +500,14 @@ Y la estructura de un tema es la siguiente:
 ```
 Es importante destacar que:
 
-- Si dentro de views existe un directorio llamado `partials` con los archivos `header.blade.php`, `footer.blade.php` o `403.blade.php`, estos *pisaran* a los partials dentro dentro del tema de LaCrud seleccionado.
-- Si existe un archivo `layout.balde.php` en la raiz del directorio views este también sera prioridad por sobre el tema.
+- Si dentro de views existe un directorio llamado `partials` con los archivos `header.blade.php`, `footer.blade.php` o `403.blade.php`, estos *pisarán* a los partials dentro dentro del tema de LaCrud seleccionado.
+- Si existe un archivo `layout.blade.php` en la raiz del directorio views este también será prioridad por sobre el tema.
 
-> Para crear un tema se puede descargar [esta base de creación]() para personalizarla de la manera que se estime conveniente.
+> Para crear un tema se puede descargar [esta base de creación](#) para personalizarla de la manera que se estime conveniente.
 
 ### Vista personalizada de "Mi Aplicación"
 
-Nuestra aplicación también debe colgarse de los templates base de LaCrud, por ejemplo, podemos tener */resources/admin/dashboard.blade.php*, y necesitamos que esta vista use los mismos recursos del tema de LaCrud, para ello nuestro archivo debera lucir de esta manera:
+Nuestra aplicación también debe colgarse de los templates base de LaCrud, por ejemplo, podemos tener `/resources/admin/dashboard.blade.php`, y necesitamos que esta vista use los mismos recursos del tema de LaCrud, para ello nuestro archivo deberá lucir de esta manera:
 
 ```php
 @extends('vendor.LaCrud.YourAwesomeTheme.layout')
@@ -525,9 +525,9 @@ Nuestra aplicación también debe colgarse de los templates base de LaCrud, por 
 @stop
 ```
 
-### Sistema MultiIdioma
+### Sistema Multi-Idioma
 
-LaCrud tiene sus mensajes de alerta, texto de botones y demas bajo el sistema de [idioma de Laravel](http://laravel.com/docs/5.0/localization), la estructura de estos es:
+LaCrud tiene sus mensajes de alerta, texto de botones y demás bajo el sistema de [idioma de Laravel](http://laravel.com/docs/5.0/localization), la estructura de estos es:
 
 ```
 ├── ProjectName/
@@ -540,4 +540,4 @@ LaCrud tiene sus mensajes de alerta, texto de botones y demas bajo el sistema de
 ```
 En el archivo `notifications.php` se almacenan las alertas que arroja el sistema, como creaciones y actualizaciones exitosas.
 
-Por otra parte, en el archivo `templates.php` se almacenan los textos de los botones del de las vistas y otro detalles de los titulos.
+Por otra parte, en el archivo `templates.php` se almacenan los textos de los botones de las vistas y otros detalles de los títulos.
