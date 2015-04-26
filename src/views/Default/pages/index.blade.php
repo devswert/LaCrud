@@ -49,7 +49,7 @@
                             <thead>
                                 <tr>                                    
                                     @foreach($headers as $header)
-                                        <th>{{ $header }}</th>
+                                        <th>{{ ( $header == 'actions' ) ? trans('lacrud::templates.actions') : $header }}</th>
                                     @endforeach
                                 </tr>
                             </thead>

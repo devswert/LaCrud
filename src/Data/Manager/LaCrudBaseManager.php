@@ -137,10 +137,8 @@ abstract class LaCrudBaseManager {
                 $this->assignValues($encryptFields,$register);
                 $register->table = $this->entity->table;
                 $register->save();
-                if( count($this->manyRelations) > 0 ){
-                    $this->entity = $register;
-                    $this->assignRelationsValues();
-                }
+                $this->entity = $register;
+                $this->assignRelationsValues();
                 return true;
             }
             catch(Exception $e){
@@ -179,9 +177,7 @@ abstract class LaCrudBaseManager {
             $this->assignValues( $encryptFields );
             try{
                 $this->entity->save();
-                if( count($this->manyRelations) > 0 ){
-                    $this->assignRelationsValues();
-                }
+                $this->assignRelationsValues();
                 return true;
             }
             catch(Exception $e){
@@ -320,6 +316,7 @@ abstract class LaCrudBaseManager {
                             $backupImageOcject = clone $image;
                             $finalDimensions = [];
                             $nameOptionsCrop = ['ImageCropWidth','ImageCropHeight','ImageCropX','ImageCropY'];
+                            $cantOfValuesNull = 0;
                             for ($i=0; $i < 4; $i++) { 
                                 if( array_key_exists($i, $dimension) ){
                                     if(is_numeric($dimension[$i])){
@@ -331,10 +328,16 @@ abstract class LaCrudBaseManager {
                                 }
                                 else{
                                     $finalDimensions[$nameOptionsCrop[$i]] = null;
+                                    $cantOfValuesNull++;
                                 }
                             }
                             extract($finalDimensions);
-                            $backupImageOcject->crop($ImageCropWidth,$ImageCropHeight,$ImageCropX,$ImageCropY)->save($tmpRoute.'/'.$prefix.$tmpFileName);
+                            if($cantOfValuesNull > 0 && $cantOfValuesNull < 3){
+                                $backupImageOcject->resize($ImageCropWidth,$ImageCropHeight)->save($tmpRoute.'/'.$prefix.$tmpFileName);
+                            }
+                            else{
+                                $backupImageOcject->crop($ImageCropWidth,$ImageCropHeight,$ImageCropX,$ImageCropY)->save($tmpRoute.'/'.$prefix.$tmpFileName);
+                            }
                         }
                     }
 
@@ -443,25 +446,42 @@ abstract class LaCrudBaseManager {
      * @return void
      */
     final private function assignRelationsValues(){
-        foreach ($this->manyRelations as $key => $values){
-            if( array_key_exists($key, $this->configManyRelations) ){
+        $this->prepareConfigRelations();
+        foreach ($this->configManyRelations as $key => $values){
+            if( array_key_exists(strtolower($key), $this->configManyRelations) ){
                 $local_key = ( array_key_exists('local_key', $this->configManyRelations[$key]) ) ? $this->configManyRelations[$key]['local_key'] : 'id';
                 \DB::table( $this->configManyRelations[$key]['pivot']['table'] )->where( $this->configManyRelations[$key]['pivot']['local_key'] , '=', $this->entity->$local_key)->delete();
-                $inserts_values = array();
-                $cont = 0;
-                foreach ($values as $remote_key){
-                    $tmp = array(
-                        $this->configManyRelations[$key]['pivot']['local_key'] => $this->entity->$local_key,
-                        $this->configManyRelations[$key]['pivot']['remote_key'] => $remote_key
-                    );
-                    if( array_key_exists('order',  $this->configManyRelations[$key]['pivot']) )
-                        $tmp[$this->configManyRelations[$key]['pivot']['order']] = $cont;
-                    array_push($inserts_values, $tmp);
-                    $cont++;
+
+                if( array_key_exists($key, $this->manyRelations) ){
+                    $inserts_values = array();
+                    $cont = 0;
+                    foreach ($this->manyRelations[$key] as $remote_key){
+                        $tmp = array(
+                            $this->configManyRelations[$key]['pivot']['local_key'] => $this->entity->$local_key,
+                            $this->configManyRelations[$key]['pivot']['remote_key'] => $remote_key
+                        );
+                        if( array_key_exists('order',  $this->configManyRelations[$key]['pivot']) )
+                            $tmp[$this->configManyRelations[$key]['pivot']['order']] = $cont;
+                        array_push($inserts_values, $tmp);
+                        $cont++;
+                    }
+                    \DB::table( $this->configManyRelations[$key]['pivot']['table'] )->insert($inserts_values);
                 }
-                \DB::table( $this->configManyRelations[$key]['pivot']['table'] )->insert($inserts_values);
             }
         }
+    }
+
+    /**
+     * Parse all keys of $configManyRelations to lower case.
+     *
+     * @return void
+     */
+    final private function prepareConfigRelations(){
+        $newArray = [];
+        foreach ($this->configManyRelations as $key => $value){
+            $newArray[ strtolower($key) ] = $value;
+        }
+        $this->configManyRelations = $newArray;
     }
 
     /**

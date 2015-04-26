@@ -14,7 +14,13 @@ class LaCrudServiceProvider extends ServiceProvider {
 		Type::addType('enum', 'DevSwert\LaCrud\Type\Enum');
 		$this->loadViewsFrom(base_path('resources/views/vendor/LaCrud'), 'lacrud');
 		$this->loadTranslationsFrom(base_path('resources/lang/LaCrud'), 'lacrud');
-		
+
+		$zip = new \ZipArchive;
+	    if ($zip->open(__DIR__.'/public/Default.zip') === TRUE){
+	        $zip->extractTo(__DIR__.'/public');
+	        $zip->close();
+	    }
+
 		$this->publishes([
 		    __DIR__.'/public/Default' => public_path('/LaCrud/Default'),
 		    __DIR__.'/views/Default' => base_path('resources/views/vendor/LaCrud/Default'),

@@ -236,7 +236,7 @@ abstract class LaCrudBaseRepository {
                 }
             }
         }
-        array_push($response, 'Actions');
+        array_push($response, 'actions');
         return $response;
     }
 
@@ -322,12 +322,13 @@ abstract class LaCrudBaseRepository {
     }
 
     final public function findManyRelations($local_pk = null){
+        $collectionRelations = [];
         if( count($this->manyRelations) > 0 ){
             foreach ($this->manyRelations as $key => $relations){
-                return $this->getOptionsForManyRelations($key,$relations,$local_pk);
+                array_push($collectionRelations, $this->getOptionsForManyRelations($key,$relations,$local_pk) );
             }
         }
-        return false;
+        return $collectionRelations;
     }
 
     final private function getOptionsForManyRelations($key,$relation = array(),$local_pk){

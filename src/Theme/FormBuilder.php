@@ -40,7 +40,9 @@ final class FormBuilder{
 			$html = '';
 			foreach ($fields as $key => $field){
 				if( $key === 'hasManyRelation' && is_array($fields['hasManyRelation'])){
-					$html .= $this->addMultiSelectManyRelation($fields['hasManyRelation']);
+					foreach ($fields['hasManyRelation'] as $relation) {
+						$html .= $this->addMultiSelectManyRelation($relation);
+					}
 				}
 				else if(!$field['isAutoincrement']){
 					if(count($field['hasForeignKeys']) > 0){
