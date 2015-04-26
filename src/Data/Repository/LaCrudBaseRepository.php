@@ -236,6 +236,14 @@ abstract class LaCrudBaseRepository {
                 }
             }
         }
+
+        //Adding ManyRelations
+        if( count($this->manyRelations) > 0 ){
+            foreach ($this->manyRelations as $key => $relations){
+                array_push($response, ($withDisplayAs) ? ucfirst(str_replace('_',' ',$key )) : strtolower($key) );
+            }
+        }
+
         array_push($response, 'actions');
         return $response;
     }
@@ -270,8 +278,24 @@ abstract class LaCrudBaseRepository {
                     }
                 }
             }
+            //Adding ManyRelations
+            if( count($this->manyRelations) > 0){
+                foreach ($this->manyRelations as $key => $relations){
+                    $options = '';
+                    $result = $this->getOptionsForManyRelations($key,$relations,$row->id);
+                    foreach ($result['options'] as $value) {
+                        if( $value['isSelected'] ){
+                            $options .= $value['display'].', ';
+                        }
+                    }
+                    $options = substr($options, 0, -2);
+                    $object->{strtolower($key)} = $options;
+                }
+            }
             array_push($collection, $object);
         }
+
+
         return $collection;
     }
 
