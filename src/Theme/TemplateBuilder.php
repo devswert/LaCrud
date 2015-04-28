@@ -397,7 +397,7 @@ final class TemplateBuilder{
 
 	        	$type = $column->getType()->getName();
 				if( $type == 'text' ){
-					$type = ( array_key_exists($column->getName(),$this->controller->manager->disabledTextEditor) ) ? 'simpletext' : 'text' ;
+					$type = ( in_array($column->getName(),$this->controller->manager->disabledTextEditor) ) ? 'simpletext' : 'text' ;
 				}
 				if( $type == 'string' ){
 					$type = ( array_key_exists($column->getName() , $this->controller->repository->uploads ) ) ? 'upload' : 'string' ;
