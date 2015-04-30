@@ -523,7 +523,7 @@ abstract class LaCrudBaseManager {
                 $rules = (is_array($this->rulesCreate) && count($this->rulesCreate) > 0 ) ? $this->rulesCreate : $this->rules;
                 break;
             case 'update':
-                $rules = (is_array($this->rulesEdit) && count($this->rulesEdit) > 0 ) ? $this->rulesCreate : $this->rules;
+                $rules = (is_array($this->rulesEdit) && count($this->rulesEdit) > 0 ) ? $this->rulesEdit : $this->rules;
                 break;
             default:
                 $rules = $this->rules;
