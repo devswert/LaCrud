@@ -245,12 +245,22 @@ Estos campos seran automaticamente seteados en blanco al momento de la edición 
 Si un campo tiene una clave foránea establecida por Base de Datos esta se cargará automáticamente en un `select` mostrando por valor la clave primaria de la "tabla remota", pero si queremos desplegar otro dato para visualizar podemos:
 
 ```php
-$this->repository->nameDisplayForeignsKeys = [
+$this->repository->nativeForeignsKeys = [
 	'parent_id' => 'username'
 ];
 ```
 
 Donde *parent_id* en el nombre del campo de la tabla local que posee la relación y *username* en un campo de la "tabla remota" que se quiere desplegar en el select,
+
+Esta opción también acepta como parametro un array donde podemos indicar una sentencia where(Solo una) de la siguiente manera:
+```php
+$this->repository->nativeForeignsKeys = [
+	'parent_id' => [
+		'alias' => 'username',
+		'where' => ['username','<>','administrator']
+	]
+];
+```
 
 ### Relaciones foráneas falsas
 

@@ -8,7 +8,7 @@
 	</label>
     <select name="{{ $field['name'] }}" class="form-control">
     	@foreach($field['options'] as $option)
-    		<option value="{{ $option }}" {{ ($option == $field['value']) ? 'selected' : '' }}>{{ $option }}</option>
+    		<option value="{{ $option }}" {{ ($option == $field['value'] || $field['value'] === $value) ? 'selected' : '' }}>{{ $option }}</option>
     	@endforeach
     </select>
 </div>

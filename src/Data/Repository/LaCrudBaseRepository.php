@@ -57,7 +57,7 @@ abstract class LaCrudBaseRepository {
      *
      * @var array
      */
-    public $nameDisplayForeignsKeys = array();
+    public $nativeForeignsKeys = array();
 
     /**
      * An array with the configuration of fake
@@ -262,7 +262,7 @@ abstract class LaCrudBaseRepository {
             $object = new BaseTable();
             foreach ($row['attributes'] as $key => $value) {
                 if(!in_array($key, $this->fieldsNotSee)){
-                    if( array_key_exists($key, $this->nameDisplayForeignsKeys) ){
+                    if( array_key_exists($key, $this->nativeForeignsKeys) ){
                         $value = $this->searchAliasValue($key,$value);
                     }
                     if( array_key_exists($key, $this->fakeRelation) ){
@@ -311,8 +311,24 @@ abstract class LaCrudBaseRepository {
         $response = array();
         foreach ($foreignsKeys as $key){
             if($column->getName() === $key->getLocalColumns()[0]){
-                $display = ( array_key_exists($column->getName(), $this->nameDisplayForeignsKeys) ) ? $this->nameDisplayForeignsKeys[$column->getName()] : null;
-                $response = $this->getValuesForeignKey($key->getForeignTableName(),$key->getForeignColumns()[0],$display);
+                $display = null;
+                $where   = null;
+                if(array_key_exists($column->getName(), $this->nativeForeignsKeys)){
+                    //Getting display/alias
+                    if( is_array($this->nativeForeignsKeys[$column->getName()]) && array_key_exists('alias', $this->nativeForeignsKeys[$column->getName()]) ){
+                        $display = $this->nativeForeignsKeys[$column->getName()]['alias'];
+                    }
+                    else{
+                        $display = $this->nativeForeignsKeys[$column->getName()];
+                    }
+
+                    //Getting where
+                    if( is_array($this->nativeForeignsKeys[$column->getName()]) && array_key_exists('where', $this->nativeForeignsKeys[$column->getName()])){
+                        $where = $this->nativeForeignsKeys[$column->getName()]['where'];
+                    }
+                }
+
+                $response = $this->getValuesForeignKey($key->getForeignTableName(),$key->getForeignColumns()[0],$display,$where);
                 break;
             }
         }
@@ -331,11 +347,13 @@ abstract class LaCrudBaseRepository {
             return array();
     }
 
-    final private function getValuesForeignKey($table,$pk,$alias = null){
+    final private function getValuesForeignKey($table,$pk,$alias = null,$where = null){
         $options = array();
         $query = \DB::table($table)->select($pk);
         if(!is_null($alias))
             $query->addSelect($alias);
+        if(!is_null($where))
+            $query->where($where[0],$where['1'],$where[2]);
         foreach ($query->get() as $row){
             if(!is_null($alias))
                 $options[$row->{$alias}] = $row->{$pk};
@@ -495,7 +513,10 @@ abstract class LaCrudBaseRepository {
             }
         }
         if(isset($data)){
-            return $data->{$this->nameDisplayForeignsKeys[$field]};
+            if( is_array($this->nativeForeignsKeys[$field]) ){
+                return $data->{$this->nativeForeignsKeys[$field]['alias']};    
+            }
+            return $data->{$this->nativeForeignsKeys[$field]};
         }
         return $value;
     }

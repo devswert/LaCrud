@@ -9,7 +9,7 @@
 	
     <select name="{{ $field['name'] }}" class="form-control">
     	@foreach($field['hasForeignKeys'] as $key => $value)
-    		<option value="{{ $value }}" {{ ($value == Input::old($field['name'])) ? 'selected' : '' }}>{{ (is_numeric($key)) ? $value : $key }}</option>
+    		<option value="{{ $value }}" {{ ($value == Input::old($field['name']) || $field['value'] === $value) ? 'selected' : '' }}>{{ (is_numeric($key)) ? $value : $key }}</option>
     	@endforeach
     </select>
 </div>
