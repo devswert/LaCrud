@@ -379,8 +379,13 @@ abstract class LaCrudBaseRepository {
             $queryOptions = \DB::table($relation['remote']['table'])->select($remoteKey.' as key');
             $querySelected = \DB::table($relation['pivot']['table'])->select($relation['pivot']['remote_key'].' as key');
 
+            //Adding alias to options
             if( array_key_exists('display',$relation['remote']) && $relation['remote']['display'] != "" ){
                 $queryOptions->addSelect($relation['remote']['display'].' as display');
+            }
+            //Adding where closure if exists
+            if( array_key_exists('where',$relation['remote']) && is_array($relation['remote']['where']) && count($relation['remote']['where']) == 3 ){
+                $queryOptions->where($relation['remote']['where'][0],$relation['remote']['where'][1],$relation['remote']['where'][2]);
             }
             if(!is_null($local_pk)){
                 $querySelected->where($relation['pivot']['local_key'],'=',$local_pk);

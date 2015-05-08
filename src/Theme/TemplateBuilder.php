@@ -220,7 +220,7 @@ final class TemplateBuilder{
 
 		foreach ($columnsSchema as $key => $value){
 			if(!in_array($key, $this->controller->repository->fieldsNotSee)){
-				if( array_key_exists($key, $this->controller->repository->nameDisplayForeignsKeys) )
+				if( array_key_exists($key, $this->controller->repository->nativeForeignsKeys) )
 		            $data[$key] = $this->controller->repository->searchAliasValue($key,$information->$key);
 		        else if( array_key_exists($key, $this->controller->repository->fakeRelation) )
 		            $data[$key] = $this->controller->repository->searchFakeValue($key,$information->$key);
