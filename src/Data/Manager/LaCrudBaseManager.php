@@ -387,16 +387,22 @@ abstract class LaCrudBaseManager {
      * @return void
      */
     final private function assignValues($encryptFields, &$entity = null){
-        
+        $datetimesFields = \Session::get('fields.datetime', null);
+        $booleansFields = \Session::get('fields.booleans', array());
+
+        foreach ($booleansFields as $tmp){
+            if( is_null($entity) )
+                $this->entity->{$tmp} = false;
+            else
+                $entity->{$tmp} = false;
+        }
+
         foreach ($this->attributes as $key => &$value){
             if( strlen($key) >= 11 && substr($key, 0, 13) == "manyRelations" ){
                 $tmp = explode("#",$key);
                 $this->manyRelations[$tmp[1]] = $value;
             }
             else{
-                $datetimesFields = \Session::get('fields.datetime', null);
-                $booleansFields = \Session::get('fields.booleans', array());
-
                 if( in_array($key,$encryptFields) ){
                     if( is_null($entity) )
                         $value = \Hash::make($value);
