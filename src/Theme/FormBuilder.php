@@ -80,6 +80,9 @@ final class FormBuilder{
 							case 'upload':
 								$html .= $this->addUpload($field);
 								break;
+							case 'time':
+								$html .= $this->addTime($field);
+								break;
 							default:
 								$html .= $this->addInput($field);
 								break;
@@ -130,6 +133,16 @@ final class FormBuilder{
 	 */
 	private function addDateTime($field){
 		return \View::make($this->base_theme.'.datetime', compact('field'))->render();
+	}
+
+	/**
+	 * Generate the HTML for time ipnut
+	 *
+	 * @param $field
+	 * @return $html string
+	 */
+	private function addTime($field){
+		return \View::make($this->base_theme.'.time', compact('field'))->render();
 	}
 
 	/**

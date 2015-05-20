@@ -12,7 +12,7 @@
 	    </div>
 	    <div class="col-md-6">
 			<div class="bootstrap-timepicker">
-                <input type="text" name="{{ $field['name'] }}-time" class="form-control timepicker"/>
+                <input type="text" name="{{ $field['name'] }}-time" class="form-control timepicker" value="{{ (Input::old($field['name'].'-time')) ? Input::old($field['name'].'-time') : $field['value']['time'] }}" />
             </div>
 	    </div>
 	</div>

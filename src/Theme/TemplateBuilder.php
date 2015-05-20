@@ -418,6 +418,12 @@ final class TemplateBuilder{
 		        			$fieldsDatetime[$column->getName()] = $type;
 		        		}
 		        		else{
+		        			if( !$model->{$column->getName()} instanceOf Carbon ){
+		        				$tmp = explode(' ', $model->{$column->getName()});
+		        				$dates = explode('-', $tmp[0]);
+		        				$hours = explode(':', $tmp[1]);
+		        				$model->{$column->getName()} = Carbon::create($dates[0],$dates[1],$dates[2],$hours[0],$hours[1],$hours[2]);
+		        			}
 		        			$value = [
 		        				'date' => $model->{$column->getName()}->format('d-m-Y'),
 		        				'time' => $model->{$column->getName()}->toTimeString()

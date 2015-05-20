@@ -45,7 +45,7 @@
             <div class="col-md-12 col-xs-12">
                 <div class="box box-solid">
                     <div class="box-body">
-                        <table id="dataTableInfo" class="table table-bordered table-striped">
+                        <table id="dataTableInfo" class="table table-bordered table-striped table-responsive">
                             <thead>
                                 <tr>                                    
                                     @foreach($headers as $header)
